@@ -1,0 +1,729 @@
+<div class="container-fluid border rounded">
+  <div class="row" style="height:900px;">
+    <div class="col col-sm-1 mh-100">
+      <div class="card border-info">
+        <img class="img-thumbnail" src="assets/images/tie.jpg" width="250" height="250">
+        <img class="img-thumbnail" src="assets/images/LC1.jpg" width="250" height="250">
+        <img class="img-thumbnail" src="assets/images/starry.jpg" width="250" height="250">
+      </div>
+    </div>
+    <div class="col col-sm-2 mh-100 border-info text-dark text-center">
+      <div class="card border-info">
+        <p class="font-weight-bold">{{ constants.left_msg1 }}</p>
+        <h4 *ngIf="!loaded" >Loading...</h4>
+        <div *ngIf="loaded" class="mh-100">
+          <p>-----------------------</p>
+          <p>{{ constants.left_msg2 }} {{ config.maxrecords }} {{ constants.left_msg3 }}</p>
+          <p>-----------------------</p>
+          <p>{{ constants.left_msg3b }}</p>
+          <p class="mt-3">{{ constants.left_msg4 }}</p>
+          <p>{{ constants.left_msg5 }}</p>
+          <p>{{ constants.left_msg6 }}</p>
+          <p>-----------------------</p>
+          <p class="font-weight-bold">{{ constants.left_msg7 }}</p>
+          <p class="font-weight-bold">{{ constants.left_msg8 }}</p>
+        </div>  
+      </div>
+    </div>
+    <!-- middle column -->
+    <div class="col col-sm-6 mh-100">
+      <h4 class="card text-center font-italic border-info text-info" >Define Your Data</h4>
+      <h4 *ngIf="!loaded" >Loading...</h4>
+      <div *ngIf="loaded"> <!-- entire section below the header -->
+        <div class="card border-info p-2">
+          <div class="row">  <!-- num records and type section -->
+            <div class="col">
+              <label class="mr-2 font-weight-bold" data-toggle="" title="{{constants.tooltip_numrecords}}"># of Records:</label>
+            </div>
+            <div class="col">
+              <input type="number" [min]="5" [max]="config.maxrecords" step="5" 
+              onkeyup="if(this.value<0){this.value= this.value * -1} else if(this.value>max){this.value=max}"
+              [(ngModel)]="numRecords" name="numRecords" >
+            </div>
+            <div class="col">
+              <label class="mb-2 font-weight-bold" data-toggle="" title="{{constants.tooltip_recordtype}}">Data Format: </label>
+            </div>
+            <div class="col">
+                <select class="card-sm-body text-center" [(ngModel)]="selectedRecordType" (change)="recordtypewasselected=true" name="recordtypedropdown">
+                  <option *ngFor="let option of config.recordtypes" [value]="option">
+                    {{ option }}
+                  </option>
+                </select>
+            </div>
+          </div> <!-- END num records and type section -->
+          <div class="row"> <!-- file name section -->
+            <div class="col-sm-3">
+              <label for="filename" class="mr-2 font-weight-bold" data-toggle="" title="{{constants.tooltip_filename}}">File Name:</label>
+            </div>
+            <div class="col-sm-9">
+              <input type="text" class="form-control border-info" name="filename"
+                  [(ngModel)]="filename" (keyup)="lettersOnly()">
+            </div>
+          </div> <!-- END file name section -->
+          <div class="row"> <!-- header/footer section -->
+            <div class="col-sm-2">
+              <label for="header" class="mr-2 font-weight-bold" data-toggle="" title="{{constants.tooltip_header}}">Header:</label>
+            </div>
+            <div class="col-sm-1">
+              <input type="checkbox" name="header" class="form-check-input" (change)="header=!header">
+            </div>
+            <div class="col-sm-9"></div>
+          </div> <!-- END header/footer section -->
+          <div class="row">
+            <div class="col-sm-2">
+              <label for="footer" class="mr-2 font-weight-bold" data-toggle="" title="{{constants.tooltip_footer}}">Footer:</label>
+            </div>
+            <div class="col-sm-1">
+              <input type="checkbox" name="footer" class="form-check-input" (change)="header=!header">
+            </div>
+            <div class="col-sm-9"></div>
+          </div>
+        </div>
+        <div *ngIf="recordtypewasselected"> <!-- table and form section -->
+          <div class="card border-info"> <!-- table section -->
+            <div class="card-body table-responsive">
+              <table class="table table-bordered table-hover rounded">
+                <thead>
+                  <tr class="table-info">
+                    <th>
+                      <i class="text-size-10">data name</i>
+                    </th>
+                    <th>
+                      <i class="text-size-10">data type</i>
+                    </th>
+                    <th>
+                      <i class="text-size-8">null %</i>
+                    </th>
+                    <th>
+                      <i class="text-size-8">blank %</i>
+                    </th>
+                    <th>
+                      <i class="text-size-8">invalid %</i>
+                    </th>
+                    <th>
+                      <i class="text-size-8">edit item</i>
+                    </th>
+                    <th>
+                      <i class="text-size-8">remove item</i>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody *ngFor="let dto of fieldsList; let i = index">
+                  <tr>
+                    <td [hidden]="true">{{ i + 1 }}</td>
+                    <td>
+                      <i class="text-size-8">{{dto.dataname}}</i>
+                    </td>
+                    <td>
+                      <i class="text-size-8">{{dto.datatype}}</i>
+                    </td>
+                    <td>
+                      <i class="text-size-8">{{dto.nullpercent}}</i>
+                    </td>
+                    <td>
+                      <i class="text-size-8">{{dto.blankpercent}}</i>
+                    </td>
+                    <td>
+                      <i class="text-size-8">{{dto.invalidpercent}}</i>
+                    </td>
+                    <td>
+                      <button class="btn-edit" type="submit" [disabled]="addMode || editMode" (click)="editItem(i)">
+                        <span class="iconspan fa fa-edit"></span>
+                      </button>
+                    </td>
+                    <td>
+                      <button class="btn-edit" type="submit" [disabled]="addMode || editMode" (click)="deleteItem(i)">
+                        <span class="iconspan fa fa-trash-o"></span>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div> <!-- END table section -->
+          <div class="card border-info"> <!-- form section -->
+            <button *ngIf="!editMode" [hidden]="addbtnhidden" (click)="initiateAdd()" class="btn btn-sm btn-outline-info mb-3 mt-3 font-italic">{{this.addItemMessage}}</button>
+            <h6 class="text-center font-italic text-info" *ngIf="showForm">{{this.formMessage}}</h6>
+            <div class="card card-body mb-3 border-info" *ngIf="showForm">
+              <form #fieldForm="ngForm" (submit)="onSubmit($event)">
+                <!-- data type dropdown -->
+                  <div class="row" *ngIf="addMode">
+                    <div class="col col-sm-2"></div>
+                    <div class="col col-sm-2">
+                      <label class="mb-2 mr-sm-2"
+                      data-toggle="" title="{{constants.tooltip_datatype}}">Data Type: </label>
+                    </div>
+                    <div class="col col-sm-4">
+                      <select class="card-sm-body text-center" [(ngModel)]="selectedValue" (change)="onSelectedDataType($event)" name="datatypedropdown">
+                        <option *ngFor="let option of datatypeoptions" [value]="option.value">
+                          {{ option.viewValue }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col col-sm-4"></div>
+                  </div>
+                  
+                <!-- listItem section -->
+                <div *ngIf="showListItemForm" >
+                  <!-- messages section -->
+                  <div class="card mb-1 border-info text-center" *ngIf="!fbb.hideStringMsg">
+                    <p class="font-italic">{{ constants.middle_str_msg1 }}</p>
+                    <p class="font-italic">{{ constants.middle_str_msg2 }}</p>
+                  </div>
+                  <div class="card mb-1 border-info text-center" *ngIf="!fbb.hideWholeMsg">
+                    <p class="font-italic">{{ constants.middle_whole_msg1 }}</p>
+                    <!-- <p class="font-italic">{{ constants.middle_str_msg2 }}</p> -->
+                  </div>
+                  <div class="card mb-1 border-info text-center" *ngIf="!fbb.hideNumberMsg">
+                    <p class="font-italic">{{ constants.middle_dec_msg1 }}</p>
+                    <!-- <p class="font-italic">{{ constants.middle_str_msg2 }}</p> -->
+                  </div>
+                  <div class="card mb-1 border-info text-center" *ngIf="!fbb.hideDateTimeMsg">
+                    <p class="font-italic">{{ constants.middle_date_msg1 }}</p>
+                    <p class="font-italic">{{ constants.middle_date_msg2 }}</p>
+                  </div>
+                  <div class="card mb-1 border-info text-center" *ngIf="!fbb.hideBooleanMsg">
+                    <p class="font-italic">{{ constants.middle_bool_msg1 }}</p>
+                    <!-- <p class="font-italic">{{ constants.middle_str_msg2 }}</p> -->
+                  </div>
+                  <div class="card mb-1 border-info text-center" *ngIf="!fbb.hideSpecialMsg">
+                    <p class="font-italic">{{ constants.middle_spec_msg1 }}</p>
+                    <!-- <p class="font-italic">{{ constants.middle_str_msg2 }}</p> -->
+                  </div>
+                  <!-- END messages section -->
+                  <!-- data type field - edit mode only -->
+                  <div class="row form-group mb-1" *ngIf="editMode">
+                    <div class="col">
+                      <label for="datatype" class="mr-2"
+                      data-toggle="" title="{{constants.tooltip_datatype}}">data type</label>
+                    </div>
+                    <div class="col">
+                      <input disabled type="text" class="form-control" [(ngModel)]="listItemBB.datatype" name="datatype">
+                    </div>
+                    <div class="col col-sm-4"></div>
+                  </div> <!-- END data type field - edit mode only -->
+                  <!-- FIELD NAME -->
+                  <div class="row form-group mb-1" *ngIf="!fbb.hideFieldName">
+                    <div class="col col-sm-3">
+                      <label for="dataname" data-toggle="" title="{{constants.tooltip_name}}"
+                      class="mr-2">Field Name:</label>
+                    </div>
+                    <div class="col col-sm-9">
+                        <input type="text" [(ngModel)]="listItemBB.dataname" class="form-control border-info" name="dataname">
+                    </div>
+                  </div>
+                  <!-- NULL % -->
+                  <div class="row form-group mb-1">
+                    <div class="col col-sm-2">
+                      <label for="nullpct" class="mr-2" 
+                      data-toggle="" title="{{constants.tooltip_null}}">Null %:</label>
+                    </div>
+                    <div class="col col-sm-4">
+                        <input type="number" class="form-control border-info"
+                        min="0" [max]="100-(listItemBB.blankpercent+listItemBB.invalidpercent)" name="nullpct"
+                        onkeyup="if(this.value<0){this.value= this.value * -1} else if(this.value>max){this.value=max}"
+                        [(ngModel)]="listItemBB.nullpercent"
+                        >
+                    </div>
+                    <!-- fixed length Y/N -->
+                    <div class="col col-sm-3" style="padding:5px;" *ngIf="!fbb.hideStrFixedLengthYorN">
+                      <label for="fixedlgthYN" class="mr-2" style="padding-right:5px;"
+                      data-toggle="" title="{{constants.tooltip_fixedlength}}">Fixed Length:</label>
+                    </div>
+                    <div class="col col-sm-3 btn-toolbar" role="toolbar" *ngIf="!fbb.hideStrFixedLengthYorN">
+                      <div class="btn-group-sm mr-2" name="fixedlgthYN" role="group">
+                        <button type="button" [disabled]="listItemBB.isfixedlength"
+                        (click)="useFixedLength('yes')" class="btn btn-white border-dark text-dark">YES</button>
+                        <button type="button" [disabled]="!listItemBB.isfixedlength"
+                        (click)="useFixedLength('no')" class="btn btn-white border-dark text-dark">NO</button>
+                      </div>
+                    </div>
+                    <!-- date/time/both button for date/time field-->
+                    <div class="col col-sm-2" *ngIf="!fbb.hidedateOrTimeBtn">
+                      <label for="datetimebtn" class="mr-2"
+                      data-toggle="" title="{{constants.tooltip_date_time_selector}}">Type:</label>
+                    </div>
+                    <div class="col col-sm-4 btn-toolbar" role="toolbar" *ngIf="!fbb.hidedateOrTimeBtn">
+                      <div class="btn-group-sm mr-2" name="datetimebtn" role="group">
+                        <button type="button" [disabled]="listItemBB.hasdate && !listItemBB.hastime"
+                        (click)="dateTimeBtnChanged('date')" class="btn btn-white border-dark text-dark">DATE</button>
+                        <button type="button" disabled
+                        (click)="dateTimeBtnChanged('time')" class="btn btn-white border-dark text-dark">TIME</button>
+                        <button type="button" [disabled]="listItemBB.hasdate && listItemBB.hastime"
+                        (click)="dateTimeBtnChanged('both')" class="btn btn-white border-dark text-dark">BOTH</button>
+                      </div>
+                      <!-- [disabled]="!listItemBB.hasdate && listItemBB.hastime" -->
+                    </div>
+                    <!-- is ranged button for whole and decimal -->
+                    <div class="col col-sm-3" *ngIf="!fbb.hideRangedValYorN">
+                      <label for="rangedYN" class="mr-2"
+                      data-toggle="" title="{{constants.tooltip_ranged}}">Ranged Number:</label>
+                    </div>
+                    <div class="col col-sm-3 btn-toolbar" role="toolbar" *ngIf="!fbb.hideRangedValYorN">
+                      <div class="btn-group-sm mr-2" name="rangedYN" role="group">
+                        <button type="button" [disabled]="listItemBB.isranged"
+                        (click)="useRangedNum('yes')" class="btn btn-white border-dark text-dark">YES</button>
+                        <button type="button" [disabled]="!listItemBB.isranged"
+                        (click)="useRangedNum('no')" class="btn btn-white border-dark text-dark">NO</button>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Blank % -->
+                  <div class="row form-group mb-1">
+                    <div class="col col-sm-2">
+                      <label for="blankpct" class="mb-2"
+                      data-toggle="" title="{{constants.tooltip_blank}}">Blank %:</label>
+                    </div>
+                    <div class="col col-sm-4">
+                      <input type="number" class="form-control border-info"
+                      min="0" [max]="100-(listItemBB.nullpercent+listItemBB.invalidpercent)" name="blankpct"
+                      onkeyup="if(this.value<0){this.value= this.value * -1} else if(this.value>max){this.value=max}"
+                      [(ngModel)]="listItemBB.blankpercent">
+                    </div>
+                    <!-- ranged button for date/time -->
+                    <div class="col col-sm-3" *ngIf="!fbb.hideRangedDteYorN">
+                      <label for="rangedYN" class="mr-2"
+                      data-toggle="" title="{{constants.tooltip_ranged_dte}}">Ranged Date:</label>
+                    </div>
+                    <div class="col col-sm-3 btn-toolbar" role="toolbar" *ngIf="!fbb.hideRangedDteYorN">
+                      <div class="btn-group-sm mr-2" name="rangedYN" role="group">
+                        <button type="button" [disabled]="listItemBB.isranged"
+                        (click)="useRangedNum('yes')" class="btn btn-white border-dark text-dark">YES</button>
+                        <button type="button" [disabled]="!listItemBB.isranged"
+                        (click)="useRangedNum('no')" class="btn btn-white border-dark text-dark">NO</button>
+                      </div>
+                    </div>
+                    <!-- min value for whole -->
+                    <div class="col col-sm-2" *ngIf="!fbb.hideMinWholeVal">
+                      <label for="minvalwhole" data-toggle="" title="{{constants.tooltip_minval}}"
+                      class="mb-2" style="padding-right: 5px;" >Min Value:</label>
+                    </div>
+                    <div class="col col-sm-4" *ngIf="!fbb.hideMinWholeVal">
+                        <input type="text" class="form-control border-info" name="minvalwhole"
+                        [(ngModel)]="listItemBB.minvaluestr" (keyup)="makeNumbersOnly(1)">
+                    </div>
+                    <!-- base value for whole -->
+                    <div class="col col-sm-2" *ngIf="!fbb.hideBaseVal">
+                      <label for="basevalwhole" data-toggle="" title="{{constants.tooltip_base_val}}"
+                      class="mb-2" style="padding-right: 5px;" >Base Value:</label>
+                    </div>
+                    <div class="col col-sm-4" *ngIf="!fbb.hideBaseVal">
+                        <input type="text" class="form-control border-info" name="basevalwhole"
+                        [(ngModel)]="listItemBB.basevaluestr" (keyup)="makeNumbersOnly(3)">
+                    </div>
+                    <!-- min value for decimal -->
+                    <div class="col col-sm-2" *ngIf="!fbb.hideMinDecVal">
+                      <label for="minvaldec" data-toggle="" title="{{constants.tooltip_minval}}"
+                      class="mb-2" style="padding-right: 5px;" >Min Value:</label>
+                    </div>
+                    <div class="col col-sm-4" *ngIf="!fbb.hideMinDecVal">
+                        <input type="text" class="form-control border-info" name="minvaldec"
+                        [(ngModel)]="listItemBB.minvaluestr" (keyup)="makeNumbersOnly(1)">
+                    </div>
+                    <!-- base value for decimal -->
+                    <div class="col col-sm-2" *ngIf="!fbb.hideBaseDecimalVal">
+                      <label for="basevaldec" data-toggle="" title="{{constants.tooltip_base_val}}"
+                      class="mb-2" style="padding-right: 5px;" >Base Value:</label>
+                    </div>
+                    <div class="col col-sm-4" *ngIf="!fbb.hideBaseDecimalVal">
+                        <input type="text" class="form-control border-info" name="basevaldec"
+                        [(ngModel)]="listItemBB.basevaluestr" (keyup)="makeNumbersOnly(3)">
+                    </div>
+                    <!--min length for string -->
+                    <div class="col col-sm-2" *ngIf="!fbb.hideMinStrLgth"
+                    style="padding:5px;">
+                      <label for="minlength" class="mr-2" style="padding-right:5px;"
+                      data-toggle="" title="{{constants.tooltip_minlength}}">Min Length:</label>
+                    </div>
+                    <div class="col col-sm-4" *ngIf="!fbb.hideMinStrLgth">
+                        <input type="number" class="form-control border-info"
+                        [min]="config.stringOps.minlength" [max]="listItemBB.maxlength" name="minlength"
+                        onkeyup="if(this.value<min){this.value=min} else if(this.value>max){this.value=max}"
+                        [(ngModel)]="listItemBB.minlength"
+                        >
+                    </div>
+                    <!-- or fixed length -->
+                    <div class="col col-sm-2" *ngIf="!fbb.hideStrFixedLgth"
+                    style="padding:5px;">
+                      <label for="fixedlength" class="mr-2" style="padding-right:5px;"
+                      data-toggle="" title="{{constants.tooltip_fixedlength}}">Fixed Length:</label>
+                    </div>
+                    <div class="col col-sm-4" *ngIf="!fbb.hideStrFixedLgth">
+                        <input type="number" class="form-control border-info"
+                        [min]="config.stringOps.minlength" [max]="config.stringOps.maxlength" name="fixedlength"
+                        onkeyup="if(this.value<min){this.value=min} else if(this.value>max){this.value=max}"
+                        [(ngModel)]="listItemBB.fixedlength"
+                        >
+                    </div>
+                  </div>
+                  
+                  <div class="row form-group mb-1">
+                    <!-- Invalid % -->
+                    <div class="col col-sm-2">
+                      <label for="invalidpct" class="mr-2"
+                      data-toggle="" title="{{constants.tooltip_invalid}}">Invalid %:</label>
+                    </div>
+                    <div class="col col-sm-4">
+                      <input type="number" class="form-control border-info"
+                      min="0" [max]="100-(listItemBB.blankpercent+listItemBB.nullpercent)" name="invalidpct"
+                      onkeyup="if(this.value<0){this.value= this.value * -1} else if(this.value>max){this.value=max}"
+                      [(ngModel)]="listItemBB.invalidpercent"  >
+                    </div>
+                    <!-- format field for date/time -->
+                    <div class="col col-sm-2" *ngIf="!fbb.hideFormat">
+                      <label for="formatdropdown" class="mr-2"
+                      data-toggle="" title="{{constants.tooltip_datatype}}">Format:</label>
+                    </div>
+                    <div class="col col-sm-4" *ngIf="!fbb.hideFormat">
+                      <select class="form-control border-info text-center" 
+                      [(ngModel)]="listItemBB.format" 
+                      (change)="changeIncrements($event)" 
+                      name="formatdropdown">
+                        <option *ngFor="let option of datetimeoptions" [value]="option.value">
+                          {{ option.viewValue }}
+                        </option>
+                      </select>
+                    </div>
+                    <!-- max value for whole -->
+                    <div class="col col-sm-2" *ngIf="!fbb.hideMaxWholeVal">
+                      <label for="maxvalwhole" data-toggle="" title="{{constants.tooltip_maxval}}"
+                      class="mb-2" style="padding-right: 5px;" >Max Value:</label>
+                    </div>
+                    <div class="col col-sm-4" *ngIf="!fbb.hideMaxWholeVal">
+                        <input type="text" class="form-control border-info" name="maxvalwhole"
+                        [(ngModel)]="listItemBB.maxvaluestr" (keyup)="makeNumbersOnly(2)">
+                    </div>
+                    <!-- incremental value for whole -->
+                    <div class="col col-sm-2" *ngIf="!fbb.hideIncrementVal">
+                      <label for="incvalwhole" data-toggle="" title="{{constants.tooltip_increment}}"
+                      class="mb-2" style="padding-right: 5px;" >Increment:</label>
+                    </div>
+                    <div class="col col-sm-4" *ngIf="!fbb.hideIncrementVal">
+                        <input type="text" class="form-control border-info" name="incvalwhole"
+                        [(ngModel)]="listItemBB.incrementstr" (keyup)="makeNumbersOnly(4)">
+                    </div>
+                    <!-- max value for decimal -->
+                    <div class="col col-sm-2" *ngIf="!fbb.hideMaxDecVal">
+                      <label for="maxvaldec" data-toggle="" title="{{constants.tooltip_maxval}}"
+                      class="mb-2" style="padding-right: 5px;" >Max Value:</label>
+                    </div>
+                    <div class="col col-sm-4" *ngIf="!fbb.hideMaxDecVal">
+                        <input type="text" class="form-control border-info" name="maxvaldec"
+                        [(ngModel)]="listItemBB.maxvaluestr" (keyup)="makeNumbersOnly(2)">
+                    </div>
+                    <!-- incremental value for decimal -->
+                    <div class="col col-sm-2" *ngIf="!fbb.hideIncDecimalVal">
+                      <label for="incvaldec" data-toggle="" title="{{constants.tooltip_increment}}"
+                      class="mb-2" style="padding-right: 5px;" >Increment:</label>
+                    </div>
+                    <div class="col col-sm-4" *ngIf="!fbb.hideIncDecimalVal">
+                        <input type="text" class="form-control border-info" name="incvaldec"
+                        [(ngModel)]="listItemBB.incrementstr" (keyup)="makeNumbersOnly(4)">
+                    </div>
+                    <!--max length -->
+                    <div class="col col-sm-2" *ngIf="!fbb.hideMaxStrLgth"
+                      style="padding:5px;">
+                      <label for="maxlength" class="mr-2" 
+                      data-toggle="" title="{{constants.tooltip_maxlength}}"
+                      style="padding-right:5px;">Max Length:</label>
+                    </div>
+                    <div class="col col-sm-4" *ngIf="!fbb.hideMaxStrLgth">
+                        <input type="number" class="form-control border-info"
+                        [min]="listItemBB.minlength" [max]="config.stringOps.maxlength" name="maxlength"
+                        onkeyup="if(this.value<min){this.value=min} else if(this.value>max){this.value=max}"
+                        [(ngModel)]="listItemBB.maxlength"
+                        >
+                    </div>
+                  </div>
+                  <div class="card border border-info mb-1" *ngIf="!fbb.hideStrChckbxs">
+                    <!-- checkboxes -->
+                    <div class="row" >
+                      <div class="col col-sm-12">
+                        <p class="font-weight-bold text-center" 
+                        data-toggle="" title="{{constants.tooltip_exclusions}}">{{ constants.middle_str_chkbx }}</p>
+                      </div>
+                    </div>
+                    <div class="row mb-1" >
+                      <div class="col col-sm-1"></div>
+                      <div class="col col-sm-2 form-check-inline">
+                        <label class="form-check-label" data-toggle="" title="{{constants.tooltip_lowercase_bx}}">
+                          <input type="checkbox" 
+                          [checked]="listItemBB.allowlowers" (change)="listItemBB.allowlowers=!listItemBB.allowlowers"
+                          class="form-check-input" value="L">Lowercase
+                        </label>
+                      </div>
+                      <div class="col col-sm-2 form-check-inline">
+                        <label class="form-check-label" data-toggle="" title="{{constants.tooltip_uppercase_bx}}">
+                          <input type="checkbox" 
+                          [checked]="listItemBB.allowuppers" (change)="listItemBB.allowuppers=!listItemBB.allowuppers"
+                          class="form-check-input" value="U">Uppercase
+                        </label>
+                      </div>
+                      <div class="col col-sm-2 form-check-inline">
+                        <label class="form-check-label" data-toggle="" title="{{constants.tooltip_numbers_bx}}">
+                          <input type="checkbox" 
+                          [checked]="listItemBB.allownumbers" (change)="listItemBB.allownumbers=!listItemBB.allownumbers"
+                          class="form-check-input" value="N">Numbers
+                        </label>
+                      </div>
+                      <div class="col col-sm-4 form-check-inline">
+                        <label class="form-check-label" data-toggle="" title="{{constants.tooltip_specials_bx}}">
+                          <input type="checkbox" 
+                          [checked]="listItemBB.allowspecials" (change)="listItemBB.allowspecials=!listItemBB.allowspecials"
+                          class="form-check-input" value="S">Special Characters
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row form-group mb-1" *ngIf="!fbb.hideSignDigits">
+                    <!-- Significant Digits for decimal field -->
+                    <div class="col col-sm-4" ></div>
+                    <div class="col col-sm-4" >
+                      <label for="signdigits" class="mr-2"
+                      data-toggle="" title="{{constants.tooltip_signdigits}}">Significant Digits:</label>
+                    </div>
+                    <div class="col col-sm-4">
+                      <input type="number" class="form-control border-info"
+                      min="0" [max]="100" name="signdigits"
+                      onkeyup="if(this.value<0){this.value= this.value * -1} else if(this.value>max){this.value=max}"
+                      [(ngModel)]="listItemBB.signdigits"  >
+                    </div>
+                  </div>
+                  <div class="row form-group mb-1">
+                    <!-- Distinct Option -->
+                    <div class="col col-sm-3" *ngIf="!fbb.hideDstnctYorN">
+                      <label for="distinct" class="mr-2"
+                      data-toggle="" title="{{constants.tooltip_distinct}}">Distinct Values:</label>
+                    </div>
+                    <div class="col col-sm-3 btn-toolbar" role="toolbar" *ngIf="!fbb.hideDstnctYorN">
+                      <div class="btn-group-sm mr-2" name="distinct" role="group">
+                        <button type="button" [disabled]="listItemBB.usedistinctvals"
+                        (click)="useDistincts('yes')" class="btn btn-white border-dark text-dark">YES</button>
+                        <button type="button" [disabled]="!listItemBB.usedistinctvals"
+                        (click)="useDistincts('no')" class="btn btn-white border-dark text-dark">NO</button>
+                      </div>
+                    </div>
+                    <div class="col col-sm-2" *ngIf="!fbb.hideDstnctFld">
+                      <label for="numdistinct" class="mr-2"
+                      data-toggle="" title="{{constants.tooltip_total_distinct}}">Total:</label>
+                    </div>
+                    <div class="col col-sm-4" *ngIf="!fbb.hideDstnctFld">
+                        <input type="number" class="form-control border-info"
+                        [min]="1" [max]="numRecords" name="numdistinct"
+                        onkeyup="if(this.value<min){this.value=min} else if(this.value>max){this.value=max}"
+                        [(ngModel)]="listItemBB.distinctvalues"
+                        >
+                    </div>
+                  </div>
+                  <!-- REGEXP pattern-->
+                  <div class="row form-group mb-1">
+                    <div class="col col-sm-3" *ngIf="!fbb.hidePatternYorN">
+                      <label for="strexprYN" class="mr-2"
+                      data-toggle="" title="{{constants.tooltip_usepattern}}">Use Expression:</label>
+                    </div>
+                    <div class="col col-sm-3 btn-toolbar" role="toolbar" *ngIf="!fbb.hidePatternYorN">
+                      <div class="btn-group-sm mr-2" name="strexprYN" role="group">
+                        <button type="button" [disabled]="listItemBB.usepattern"
+                        (click)="usePattern('yes')" class="btn btn-white border-dark text-dark">YES</button>
+                        <button type="button" [disabled]="!listItemBB.usepattern"
+                        (click)="usePattern('no')" class="btn btn-white border-dark text-dark">NO</button>
+                      </div>
+                    </div>
+                    <!-- regexp pattern -->
+                    <div class="col col-sm-2" *ngIf="!fbb.hideStrPtrnTxt" >
+                      <label for="pattern" class="mr-2"
+                      data-toggle="" title="{{constants.tooltip_pattern}}">Pattern:</label>
+                    </div>
+                    <div class="col col-sm-4" *ngIf="!fbb.hideStrPtrnTxt" >
+                        <input type="text" 
+                        #pattern="ngModel" class="form-control border-info"
+                        [ngClass]="{'is-invalid':pattern.errors && pattern.touched}"
+                        [(ngModel)]="listItemBB.pattern" name="pattern"
+                        minlength="1"
+                        required>
+                      <div [hidden]="!pattern.errors?.required"
+                        class="invalid-feedback">
+                        pattern required
+                      </div>
+                      <div [hidden]="!pattern.errors?.minlength"
+                        class="invalid-feedback">
+                        Must be at least 1 character
+                      </div>
+                    </div>
+                    <!-- start date for date/time field -->
+                    <div class="col col-sm-2" *ngIf="!fbb.hideStrtDte">
+                      <label for="startdate" class="mr-2"
+                      data-toggle="" title="{{constants.tooltip_startdte}}">Start Date:</label>
+                    </div>
+                    <div class="col col-sm-4" *ngIf="!fbb.hideStrtDte">
+                      <input type="date" [(ngModel)]="listItemBB.startdatetime"
+                      (change)="dateChangeAction('start')" 
+                      class="form-control" name="startdate"> 
+                    </div>
+                    <!-- end date for date/time field -->
+                    <div class="col col-sm-2" *ngIf="!fbb.hideEndDte">
+                      <label for="enddate" class="mr-2"
+                      data-toggle="" title="{{constants.tooltip_enddte}}">End Date:</label>
+                    </div>
+                    <div class="col col-sm-4" *ngIf="!fbb.hideEndDte">
+                      <input type="date" [(ngModel)]="listItemBB.enddatetime" 
+                      (change)="dateChangeAction('end')"
+                      class="form-control" name="enddate"> 
+                    </div>
+                    <!-- base date for date/time field -->
+                    <div class="col col-sm-2" *ngIf="!fbb.hideBaseDte">
+                      <label for="startdate" class="mr-2"
+                      data-toggle="" title="{{constants.tooltip_basedte}}">Base Date:</label>
+                    </div>
+                    <div class="col col-sm-4" *ngIf="!fbb.hideBaseDte">
+                      <input type="date" [(ngModel)]="listItemBB.basedatetime" 
+                      (change)="dateChangeAction('base')"
+                      class="form-control" name="startdate"> 
+                    </div>
+                    <div class="col col-sm-6" *ngIf="!fbb.hideBaseDte">
+                      Increments
+                    </div>
+                  </div>
+                  <!-- increments for date/time components -->
+                  <div class="row form-group mb-1" *ngIf="!fbb.hideAllIncrements">
+                    <div class="col col-sm-2" *ngIf="!fbb.hideYrsInc">
+                      <label for="yearinc" class="mr-2"
+                      data-toggle="" title="{{constants.tooltip_yr_inc}}">Year:</label>
+                    </div>
+                    <div class="col col-sm-4" *ngIf="!fbb.hideYrsInc">
+                      <input type="number" class="form-control border-info" name="yearinc"
+                      min="0" onkeyup="if(this.value<0){this.value= this.value * -1}"
+                      [(ngModel)]="listItemBB.inc_yr_str">
+                    </div>
+                    <div class="col col-sm-2" *ngIf="!fbb.hideHrsInc">
+                      <label for="hoursinc" class="mr-2"
+                      data-toggle="" title="{{constants.tooltip_hr_inc}}">Hours:</label>
+                    </div>
+                    <div class="col col-sm-4" *ngIf="!fbb.hideHrsInc">
+                      <input type="number" class="form-control border-info" name="hoursinc"
+                      min="0" onkeyup="if(this.value<0){this.value= this.value * -1}"
+                      [(ngModel)]="listItemBB.inc_hrs_str">
+                    </div>
+                  </div>
+                  <div class="row form-group mb-1" *ngIf="!fbb.hideAllIncrements">
+                    <div class="col col-sm-2" *ngIf="!fbb.hideMthsInc">
+                      <label for="monthsinc" class="mr-2"
+                      data-toggle="" title="{{constants.tooltip_mnth_inc}}">Months:</label>
+                    </div>
+                    <div class="col col-sm-4" *ngIf="!fbb.hideMthsInc">
+                      <input type="number" class="form-control border-info" name="monthsinc"
+                      min="0" onkeyup="if(this.value<0){this.value= this.value * -1}"
+                      [(ngModel)]="listItemBB.inc_mth_str">
+                    </div>
+                    <div class="col col-sm-2" *ngIf="!fbb.hideMinInc">
+                      <label for="minutesinc" class="mr-2"
+                      data-toggle="" title="{{constants.tooltip_hr_inc}}">Minutes:</label>
+                    </div>
+                    <div class="col col-sm-4" *ngIf="!fbb.hideMinInc">
+                      <input type="number" class="form-control border-info" name="minutesinc"
+                      min="0" onkeyup="if(this.value<0){this.value= this.value * -1}"
+                      [(ngModel)]="listItemBB.inc_min_str">
+                    </div>
+                  </div>
+                  <div class="row form-group mb-1" *ngIf="!fbb.hideAllIncrements">
+                    <div class="col col-sm-2" *ngIf="!fbb.hideDaysInc">
+                      <label for="daysinc" class="mr-2"
+                      data-toggle="" title="{{constants.tooltip_day_inc}}">Days:</label>
+                    </div>
+                    <div class="col col-sm-4" *ngIf="!fbb.hideDaysInc">
+                      <input type="number" class="form-control border-info" name="daysinc"
+                      min="0" onkeyup="if(this.value<0){this.value= this.value * -1}"
+                      [(ngModel)]="listItemBB.inc_day_str">
+                    </div>
+                    <div class="col col-sm-2" *ngIf="!fbb.hideHrsInc">
+                      <label for="secondsinc" class="mr-2"
+                      data-toggle="" title="{{constants.tooltip_sec_inc}}">Seconds:</label>
+                    </div>
+                    <div class="col col-sm-4" *ngIf="!fbb.hideHrsInc">
+                      <input type="number" class="form-control border-info" name="secondsinc"
+                      min="0" onkeyup="if(this.value<0){this.value= this.value * -1}"
+                      [(ngModel)]="listItemBB.inc_sec_str">
+                    </div>
+                  </div>
+                  <!-- INCLUSIONS for String only -->
+                  <div class="row form-group mb-1" *ngIf="!fbb.hideInclusions">
+                    <div class="col col-sm-3">
+                      <label for="inclusions" data-toggle="" title="{{constants.tooltip_inclusions}}"
+                      class="mr-2">Include Characters:</label>
+                    </div>
+                    <div class="col col-sm-9">
+                        <input type="text" class="form-control border-info" [(ngModel)]="listItemBB.inclusions" name="inclusions" >
+                    </div>
+                  </div>
+                  <!-- EXCLUSIONS for String only -->
+                  <div class="row form-group mb-1" *ngIf="!fbb.hideExclusions">
+                    <div class="col col-sm-3">
+                      <label for="exclusions" data-toggle="" title="{{constants.tooltip_exclusions}}"
+                      class="mr-2">Exclude Characters:</label>
+                    </div>
+                    <div class="col col-sm-9">
+                        <input type="text" class="form-control border-info" [(ngModel)]="listItemBB.exclusions"  name="exclusions">
+                    </div>
+                  </div>
+                  <!-- Save Changes and Cancel buttons -->
+                  <button *ngIf="datatypeselected" (click)="saveResults('yes')" 
+                  [disabled]="!enableSaveBtn()"
+                  class="btn btn-sm btn-block btn-success text-white mb-3 font-italic">{{this.saveChangesMsg}}</button>
+                  <button *ngIf="addMode && datatypeselected || editMode" (click)="saveResults('no')" class="btn btn-sm btn-block btn-danger text-white mb-3 font-italic">{{this.cancelMsg}}</button>
+                </div>
+              </form> <!-- END form tag -->
+              <button *ngIf="addMode && !datatypeselected" name="outtercancelbtn" (click)="resetModes()" class="btn btn-sm btn-block btn-danger text-white mb-3 font-italic">Cancel Add Item</button>
+            </div> <!-- END show form tag -->
+          </div> <!-- END form section-->
+          
+        </div> <!-- END table and form section -->
+      </div> <!-- END loading section -->
+    </div> <!-- END middle column -->
+    <div class="col col-sm-2 mh-100 border-info text-dark text-center">
+      <div class="card border-info">
+        <div class="row">
+          <div class="col-sm-12">
+            <p class="font-weight-bold text-center">{{ constants.right_msg1 }}</p>
+            <p>-----------------------</p>
+          </div>
+          <h4 *ngIf="!loaded" >Loading...</h4>
+        </div>
+        <div *ngIf="loaded">
+          <div class="row">
+            <div class="col-sm-12"> 
+              <p>{{ constants.right_msg2 }}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <!-- Finished button -->
+              <button name="finishedbtn" [disabled]="!enableFinishBtn()" (click)="getData()"
+              class="btn btn-sm btn-block btn-success text-white mb-3 font-italic">{{this.finishedMessage}}</button>
+            </div>
+          </div>
+          <div class="row"> 
+            <div class="col-sm-12"> 
+              <p>-----------------------</p>
+              <p>{{ constants.right_msg3 }}</p>
+              <p>-----------------------</p>
+              <p>{{ constants.right_msg4 }}</p>
+              <p>-----------------------</p>
+              <a href="https://github.com/schnarbiemeows">My GitHub</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col col-sm-1">
+      <div class="card border-info">
+        <img class="img-thumbnail" src="assets/images/tree2.jpg" width="200" height="400">
+        <img class="img-thumbnail" src="assets/images/sky1.jpg" width="200" height="200">
+     </div>
+    </div>
+  </div>
+</div>
+<script>
+  $(document).ready(function(){
+    $('[data-toggle="xxx"]').tooltip();   
+  });
+  </script>

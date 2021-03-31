@@ -1,0 +1,144 @@
+<html>
+  <div>
+    <!-- QUICK REFERENCES:
+      pt-3 => mean "padding on the top" 
+      m = margin
+      p = padding
+      t = top, l = left, r = right, b =  bottom, x = right and left, y = top and bottom, blank = all 4 sides
+      sizes are 0 - 5 or n1 - n5(negatives)
+      auto = sets margin to auto
+      h-25 => means height of the element in %-->
+    <!-- background texts -->
+  <p class="bg-primary text-white">This background is duke blue.</p>
+  <p class="bg-success text-white">This background is green.</p>
+  <p class="bg-info text-white">This background is turqoise, and looks cool!</p>
+  <p class="bg-warning text-white">This background is yellow</p>
+  <p class="bg-danger text-white">This background is red</p>
+  <p class="bg-secondary text-white">this background is grey.</p>
+  <p class="bg-dark text-white">Dark grey background color.</p>
+  <p class="bg-light text-dark">Light grey background color.</p>
+
+  <h2>Contextual Colors</h2>
+  <p>Use the contextual classes to provide "meaning through colors":</p>
+  <p class="text-muted">This text is muted(grey).</p>
+  <p class="text-primary">This text is important(duke blue).</p>
+  <p class="text-success">This text indicates success(green).</p>
+  <p class="text-info">This text represents some information(turqoise).</p>
+  <p class="text-warning">This text represents a warning(yellow).</p>
+  <p class="text-danger">This text represents danger(red).</p>
+  <p class="text-secondary">Secondary text(grey).</p>
+  <p class="text-dark">This text is dark grey.</p>
+  <p class="text-body">Default body color (often black).</p>
+  <p class="text-light">This text is light grey (on white background).</p>
+  <p class="text-white">This text is white (on white background).</p>
+
+  <h2>Alerts</h2>
+  <p>Alerts are created with the .alert class, followed by a contextual color classes:</p>
+  <p class="alert alert-muted">This text is muted(grey).</p>
+  <p class="alert alert-primary">This text is important(duke blue).</p>
+  <p class="alert alert-success">This text indicates success(green).</p>
+  <p class="alert alert-info">This text represents some information(turqoise).</p>
+  <p class="alert alert-warning">This text represents a warning(yellow).</p>
+  <p class="alert alert-danger">This text represents danger(red).</p>
+  <p class="alert alert-secondary">Secondary text(grey).</p>
+  <p class="alert alert-dark">This text is dark grey.</p>
+  <p class="alert alert-light">This text is light grey (on white background).</p>
+  <!-- you can also use this with links: <a href="#" class="alert-link">read this message</a> -->
+  <h2>Button Styles</h2>
+  <button type="button" class="btn">Basic</button>
+  <button type="button" class="btn btn-primary">Primary</button>
+  <button type="button" class="btn btn-secondary">Secondary</button>
+  <button type="button" class="btn btn-success">Success</button>
+  <button type="button" class="btn btn-info">Info</button>
+  <button type="button" class="btn btn-warning">Warning</button>
+  <button type="button" class="btn btn-danger">Danger</button>
+  <button type="button" class="btn btn-dark">Dark</button>
+  <button type="button" class="btn btn-light">Light</button>
+  <button type="button" class="btn btn-link">Link</button>  
+  <!-- or buttons that are white with colored test and borders, that shade when you hover over them:-->
+  <button type="button" class="btn btn-outline-primary">Primary</button>
+<button type="button" class="btn btn-outline-secondary">Secondary</button>
+<button type="button" class="btn btn-outline-success">Success</button>
+<button type="button" class="btn btn-outline-info">Info</button>
+<button type="button" class="btn btn-outline-warning">Warning</button>
+<button type="button" class="btn btn-outline-danger">Danger</button>
+<button type="button" class="btn btn-outline-dark">Dark</button>
+<button type="button" class="btn btn-outline-light text-dark">Light</button>
+  </div>
+                                                  <!-- BLOCK -->
+          <!-- '-block' means that the component will always stretch the entire length of its parent <div> -->
+
+  <!-- for table rows, you can do, for example : 
+    "<tr class="table-info">, or 
+      <tr class="table-warning"> 
+        to give these same colors to table rows -->
+
+  <!-- horizontally scrollable table:
+  The .table-responsive class adds a scrollbar to the table when needed:                                                                                   
+  ex.:
+  <div class="table-responsive">
+    <table class="table table-bordered"> -->
+  
+  <!-- PROGRESS BARS https://www.w3schools.com/bootstrap4/bootstrap_progressbars.asp -->
+  <div class="progress">
+    <div class="progress-bar" style="width:70%"></div>
+  </div>
+  <!-- of course you can add bg- with the contextual color to change the color -->
+  <h2>Colored Spinners</h2>
+  <p>Use any <strong>text color utilites</strong> to add a color to the spinner:</p>
+  <!-- SPINNERS https://www.w3schools.com/bootstrap4/bootstrap_spinners.asp -->                                    
+  <div class="spinner-border text-muted"></div>
+  <div class="spinner-border text-primary"></div>
+  <div class="spinner-border text-success"></div>
+  <div class="spinner-border text-info"></div>
+  <div class="spinner-border text-warning"></div>
+  <div class="spinner-border text-danger"></div>
+  <div class="spinner-border text-secondary"></div>
+  <div class="spinner-border text-dark"></div>
+  <div class="spinner-border text-light"></div>
+  <!-- LIST GROUPS https://www.w3schools.com/bootstrap4/bootstrap_list_groups.asp -->
+  <h2>List Group With Contextual Classes</h2>
+  <ul class="list-group">
+    <li class="list-group-item list-group-item-success">Success item</li>
+    <li class="list-group-item list-group-item-secondary">Secondary item</li>
+    <li class="list-group-item list-group-item-info">Info item</li>
+    <li class="list-group-item list-group-item-warning">Warning item</li>
+    <li class="list-group-item list-group-item-danger">Danger item</li>
+    <li class="list-group-item list-group-item-primary">Primary item</li>
+    <li class="list-group-item list-group-item-dark">Dark item</li>
+    <li class="list-group-item list-group-item-light">Light item</li>
+  </ul>
+  <!-- CARDS - used a lot in the udemy course https://www.w3schools.com/bootstrap4/bootstrap_cards.asp
+  A card in Bootstrap 4 is a bordered box with some padding around its content. It includes options for headers, footers, content, colors, etc. 
+  so, it's not really anything super important so I can change it -->
+  <div class="card">
+    <div class="card-body">Basic card</div>
+  </div>
+  <!-- you just need the parent tag to have class card -->
+  <div class="card">
+    <div class="card-header">Header</div>
+    <div class="card-body">Content</div> 
+    <div class="card-footer">Footer</div>
+  </div>
+  <!-- the main difference between card-body and card-context is that card-body has a margin on all sides -->
+
+  <!-- BORDERS and other utilities https://www.w3schools.com/bootstrap4/bootstrap_utilities.asp -->
+  <span class="border border-primary"></span>
+  <span class="border border-secondary"></span>
+  <span class="border border-success"></span>
+  <span class="border border-danger"></span>
+  <span class="border border-warning"></span>
+  <span class="border border-info"></span>
+  <span class="border border-light"></span>
+  <span class="border border-dark"></span>
+  <span class="border border-white"></span>
+
+  <!-- FONT WEIGHTS -->
+  <h1>Font weight and italics</h1>
+  <p class="font-weight-bold">Bold text.</p>
+  <p class="font-weight-bolder">Bolder text.</p>
+  <p class="font-weight-normal">Normal weight text.</p>
+  <p class="font-weight-light">Light weight text.</p>
+  <p class="font-weight-lighter">Lighter weight text.</p>
+  <p class="font-italic">Italic text.</p>
+</html>
