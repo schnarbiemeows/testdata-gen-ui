@@ -8,6 +8,8 @@ import { UserConfig } from 'src/app/models/UserConfig';
 import { DataTypeOptions } from 'src/app/models/datatypeoptions';
 import { Constants } from 'src/app/models/Constants';
 import { StylesCompileDependency } from '@angular/compiler';
+import { saveAs } from 'file-saver';
+import * as FileSaver from "file-saver";
 
 @Component({
   selector: 'app-homepage',
@@ -20,6 +22,7 @@ export class HomePageComponent implements OnInit {
   userconfig: UserConfig;
   numRecords: number = 5;
   selectedRecordType: string = '';
+  fileExtension: string = "json";
   filename: string;
   header: boolean;
   footer: boolean;
@@ -28,8 +31,6 @@ export class HomePageComponent implements OnInit {
   fieldsList: ListItem[];  // these are our fields, go inside UserConfig
   copyList: ListItem[] = [];
   listItemBB: ListItem; // the backing bean for the list item form
-  totalRecords: number = 0;
-  recordformat: string = "json";
   loaded: boolean = false;
   recordtypewasselected: boolean = false;
   // the two form display booleans
@@ -62,8 +63,8 @@ export class HomePageComponent implements OnInit {
   arraySize: number = 0;
   editIndex: number = 0;
   addbtnhidden: boolean = false;
-  
-  
+
+
 
   constructor( private homepageservice: HomePageService ) { }
 
@@ -94,18 +95,29 @@ export class HomePageComponent implements OnInit {
   }
 
   getData() {
-    console.log("inside the getData method....");
+    let fileType = "text/plain"
+    if(this.selectedRecordType == "JSON") {
+      fileType = "application/json";
+      this.fileExtension = "json"
+    } else if(this.selectedRecordType == "CSV") {
+      this.fileExtension = "csv"
+    } else if(this.selectedRecordType == "TAB" || this.selectedRecordType == "PIPE") {
+      this.fileExtension = "txt"
+    } else if(this.selectedRecordType == "MYSQL") {
+      this.fileExtension = "sql"
+    }
     this.userconfig = new UserConfig();
     this.userconfig.fields = this.fieldsList;
     this.userconfig.filename = this.filename;
     this.userconfig.footer = this.footer;
     this.userconfig.header = this.header;
-    this.userconfig.format = this.recordformat;
+    this.userconfig.format = this.selectedRecordType;
     this.userconfig.numfiles = 1;
     this.userconfig.numrecords = this.numRecords;
-    this.homepageservice.createServingTypes(this.userconfig).subscribe(response => {
-      console.log("MADE IT BACK!");
-      console.log(response);
+    this.homepageservice.createServingTypes(this.userconfig, fileType).subscribe(response => {
+      console.log(response.body);
+      var blob = new Blob([response.body], {type: fileType});
+      FileSaver.saveAs(blob, this.userconfig.filename+"."+this.fileExtension);
     });
   }
 
@@ -133,7 +145,7 @@ export class HomePageComponent implements OnInit {
       this.listItemBB.distinctvalues = 1;
     }
   }
-  
+
   usePattern(value: string) {
     if(value == "yes") {
       this.fbb.hideStrPtrnTxt = false;
@@ -209,22 +221,17 @@ export class HomePageComponent implements OnInit {
   }
 
   enableFinishBtn() {
-    console.log("checking button");
-    console.log("this.filename = " + this.filename);
     if(this.addMode == true || this.editMode == true) {
-      console.log("in a mode");
       this.finishedMessage = this.constants.error_mode;
       //console.log("returning str false for name, value is: " + this.listItemBB.dataname);
       return false;
     }
     if(this.fieldsList.length<1) {
-      console.log("no data");
       this.finishedMessage = this.constants.error_data;
       //console.log("returning str false for name, value is: " + this.listItemBB.dataname);
       return false;
     }
     if((typeof(this.filename) === "undefined" || this.filename.length < 1)) {
-      console.log("filename bad");
       this.finishedMessage = this.constants.error_filename;
       //console.log("returning str false for name, value is: " + this.listItemBB.dataname);
       return false;
@@ -259,11 +266,10 @@ export class HomePageComponent implements OnInit {
       this.fbb.hidePatternYorN = true;
       this.listItemBB.isfixedlength = false;
     }
-    
+
   }
 
   useRangedNum(value: string) {
-    //console.log("clicked the ranged button : " + value)
     if(this.listItemBB.datatype == "datetime") {
       if(value == "yes") {
         this.listItemBB.isranged = true;
@@ -311,7 +317,7 @@ export class HomePageComponent implements OnInit {
         this.listItemBB.inc_min_str = 0;
         this.listItemBB.inc_sec_str = 0;
       }
-    } else if(this.listItemBB.datatype = "whole" ) {
+    } else if(this.listItemBB.datatype == "whole" ) {
       if(value == "yes") {
         this.listItemBB.isranged = true;
         this.fbb.hideBaseVal = false;
@@ -340,11 +346,13 @@ export class HomePageComponent implements OnInit {
         this.fbb.hideDstnctYorN = false;
         this.listItemBB.usedistinctvals = false;
       }
-    } else if(this.listItemBB.datatype = "number" ) {
+    } else if(this.listItemBB.datatype == "number" ) {
       if(value == "yes") {
         this.listItemBB.isranged = true;
         this.fbb.hideMinDecVal = true;
         this.fbb.hideMaxDecVal = true;
+        this.fbb.hideMinWholeVal = true;
+        this.fbb.hideMaxWholeVal = true;
         this.fbb.hideBaseDecimalVal = false;
         this.fbb.hideIncDecimalVal = false;
         this.fbb.hideDstnctFld = true;
@@ -363,6 +371,8 @@ export class HomePageComponent implements OnInit {
         this.listItemBB.incrementdecimal = 0.0;
         this.fbb.hideMinDecVal = false;
         this.fbb.hideMaxDecVal = false;
+        this.fbb.hideMinWholeVal = true;
+        this.fbb.hideMaxWholeVal = true;
         this.fbb.hideBaseDecimalVal = true;
         this.fbb.hideIncDecimalVal = true;
         this.fbb.hideDstnctFld = true;
@@ -415,7 +425,7 @@ export class HomePageComponent implements OnInit {
     var issue = false;
     switch (this.listItemBB.datatype) {
       case "string": {
-        /* string criteria 
+        /* string criteria
           EITHER (isfixedlength == false AND BOTH minlength and maxlength > 0) OR
             (isfixedlength == true AND fixedlength > 0 AND EITHER:
               usepattern == false OR (usepattern == true AND pattern.length == fixedlength))
@@ -447,7 +457,7 @@ export class HomePageComponent implements OnInit {
               }
             }
         }
-        if(this.listItemBB.allowuppers == false && 
+        if(this.listItemBB.allowuppers == false &&
           this.listItemBB.allowlowers == false &&
             this.listItemBB.allowuppers == false &&
               this.listItemBB.allownumbers == false &&
@@ -526,7 +536,7 @@ export class HomePageComponent implements OnInit {
             this.saveChangesMsg = this.constants.error_whole_incr_dec;
             issue = true;
             break;
-          } 
+          }
         } else {
             //console.log("minvaluestr is = " + this.listItemBB.minvaluestr);
             //console.log("maxvaluestr is = " + this.listItemBB.maxvaluestr);
@@ -635,7 +645,7 @@ export class HomePageComponent implements OnInit {
             break;
           }
           break;
-        }       
+        }
       }
       case "boolean": {
         this.saveChangesMsg = "Save Changes";
@@ -665,13 +675,13 @@ export class HomePageComponent implements OnInit {
     var str;
     if(item==1) {
       str = this.listItemBB.minvaluestr;
-    } else 
+    } else
     if(item==2) {
       str = this.listItemBB.maxvaluestr;
-    } else 
+    } else
     if(item==3) {
       str = this.listItemBB.basevaluestr;
-    } else 
+    } else
     if(item==4) {
       str = this.listItemBB.incrementstr;
     }
@@ -732,7 +742,7 @@ export class HomePageComponent implements OnInit {
             this.listItemBB.minvaluestr = this.listItemBB.minvaluestr.substring(0,this.listItemBB.minvaluestr.length-1);
             last = this.listItemBB.minvaluestr.substring(this.listItemBB.minvaluestr.length-1);
           } while(last == ".")
-          
+
         }
       } else if(item==2) {
         this.listItemBB.maxvaluestr = this.listItemBB.maxvaluestr.substring(0,this.listItemBB.maxvaluestr.length-1);
@@ -741,7 +751,7 @@ export class HomePageComponent implements OnInit {
           do {
             this.listItemBB.maxvaluestr = this.listItemBB.maxvaluestr.substring(0,this.listItemBB.maxvaluestr.length-1);
             last = this.listItemBB.maxvaluestr.substring(this.listItemBB.maxvaluestr.length-1);
-          } while(last == ".")   
+          } while(last == ".")
         }
       } else if(item==3) {
         this.listItemBB.basevaluestr = this.listItemBB.basevaluestr.substring(0,this.listItemBB.basevaluestr.length-1);
@@ -750,7 +760,7 @@ export class HomePageComponent implements OnInit {
           do {
             this.listItemBB.basevaluestr = this.listItemBB.basevaluestr.substring(0,this.listItemBB.basevaluestr.length-1);
             last = this.listItemBB.basevaluestr.substring(this.listItemBB.basevaluestr.length-1);
-          } while(last == ".")     
+          } while(last == ".")
         }
       } else if(item==4) {
         this.listItemBB.incrementstr = this.listItemBB.incrementstr.substring(0,this.listItemBB.incrementstr.length-1);
@@ -759,9 +769,9 @@ export class HomePageComponent implements OnInit {
           do {
             this.listItemBB.incrementstr = this.listItemBB.incrementstr.substring(0,this.listItemBB.incrementstr.length-1);
             last = this.listItemBB.incrementstr.substring(this.listItemBB.incrementstr.length-1);
-          } while(last == ".")   
+          } while(last == ".")
         }
-      }    
+      }
     }
     if(this.listItemBB.datatype == "whole") {
       if(item==1) {
@@ -781,7 +791,7 @@ export class HomePageComponent implements OnInit {
         if(this.listItemBB.incrementstr != "-") {
           this.listItemBB.increment = parseInt(this.listItemBB.incrementstr,10);
         }
-      } 
+      }
     } else if(this.listItemBB.datatype == "number" && last != ".") {
       if(item==1) {
         if(this.listItemBB.minvaluestr != "-" && this.listItemBB.minvaluestr != '') {
@@ -800,10 +810,10 @@ export class HomePageComponent implements OnInit {
         if(this.listItemBB.incrementstr != "-") {
           this.listItemBB.incrementdecimal = parseFloat(this.listItemBB.incrementstr);
         }
-      } 
+      }
     }
-  } 
-  
+  }
+
   dateChangeAction(value: string) {
     if(value == "start") {
       //console.log("date was changed, date is = "  + this.listItemBB.startdatetime);
@@ -824,7 +834,7 @@ export class HomePageComponent implements OnInit {
     this.formMessage = 'Edit Field';
     this.copyToEditBB(i);
     this.editIndex = i;
-    this.showForm = true;	
+    this.showForm = true;
     this.showListItemForm = true;
     this.datatypeselected = true;
 	  if(this.listItemBB.datatype == "string") {
@@ -865,7 +875,7 @@ export class HomePageComponent implements OnInit {
       this.fbb.turnOnDateTime(); // reset like a new data type, but....
       // on edit, certain button/fields depend on the current settings
       // format button depends on if hasdate == true
-      this.fbb.hideFormat = this.listItemBB.hasdate == false; 
+      this.fbb.hideFormat = this.listItemBB.hasdate == false;
       // start/ed dates require isranged == false, base date and increments require isranged = true
       this.fbb.hideStrtDte = this.listItemBB.isranged;
       this.fbb.hideEndDte = this.listItemBB.isranged;
@@ -876,7 +886,7 @@ export class HomePageComponent implements OnInit {
           this.fbb.hideYrsInc = false;
           this.fbb.hideMthsInc = false;
           this.fbb.hideDaysInc = false;
-        } 
+        }
         if(this.listItemBB.hastime == true) {
           this.fbb.hideHrsInc = false;
           this.fbb.hideMinInc = false;
@@ -896,18 +906,18 @@ export class HomePageComponent implements OnInit {
       this.fbb.turnOnSpecial();
     }
   }
-  
+
   deleteItem(i: number) {
     //console.log("deleting item ...." + i);
     var j;
     for(j = 0; j< this.fieldsList.length ; j++) {
-      if(j < i) { 
+      if(j < i) {
         //console.log("copying index : " + j + " to copylist");
-        this.copyList[j] = this.fieldsList[j]; 
+        this.copyList[j] = this.fieldsList[j];
       }
       else if(j > i) {
         //console.log("copying index : " + j + " to copylist");
-        this.copyList[j-1] = this.fieldsList[j]; 
+        this.copyList[j-1] = this.fieldsList[j];
       }
     }
     this.fieldsList = this.copyList;
@@ -956,11 +966,11 @@ export class HomePageComponent implements OnInit {
         //console.log("saving record");
         this.listItemBB = this.setBadDataBooleans(this.listItemBB);
         this.fieldsList[this.arraySize] = this.listItemBB;
-        this.arraySize = this.arraySize +1;  
-      }   
+        this.arraySize = this.arraySize +1;
+      }
     }
     this.clearOutFormBackingBean();
-    this.resetModes(); 
+    this.resetModes();
     this.saveChangesMsg = "Save changes";
   }
 
@@ -971,7 +981,7 @@ export class HomePageComponent implements OnInit {
 
   onSelectedDataType(e) {
     //console.log("selected the data type ....")
-    //console.log("selected value is : " + this.selectedValue)
+    console.log("selected value is : " + this.selectedValue)
     this.clearOutFormBackingBean();
     this.showListItemForm = true;
     this.datatypeselected = true;
@@ -1003,7 +1013,7 @@ export class HomePageComponent implements OnInit {
       this.fbb.turnOnSpecial();
       this.listItemBB.datatype = "special";
     }
-    //console.log("data type set is = " + this.listItemBB.datatype);
+    console.log("data type set is = " + this.listItemBB.datatype);
     //console.log("the button setting is = " + this.fbb.hideFormat);
   }
 
@@ -1179,4 +1189,11 @@ export class HomePageComponent implements OnInit {
     this.listItemBB.increment = this.fieldsList[i].increment ;
     this.listItemBB.signdigits = this.fieldsList[i].signdigits;
   }
+
+  changeIncrements($event: Event) {
+    /**
+     * ??? cannot remember what this was for, but the page is referencing it
+     */
+  }
+
 }

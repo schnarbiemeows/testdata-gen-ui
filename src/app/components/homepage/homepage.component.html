@@ -22,7 +22,7 @@
           <p>-----------------------</p>
           <p class="font-weight-bold">{{ constants.left_msg7 }}</p>
           <p class="font-weight-bold">{{ constants.left_msg8 }}</p>
-        </div>  
+        </div>
       </div>
     </div>
     <!-- middle column -->
@@ -36,7 +36,7 @@
               <label class="mr-2 font-weight-bold" data-toggle="" title="{{constants.tooltip_numrecords}}"># of Records:</label>
             </div>
             <div class="col">
-              <input type="number" [min]="5" [max]="config.maxrecords" step="5" 
+              <input type="number" [min]="5" [max]="config.maxrecords" step="5"
               onkeyup="if(this.value<0){this.value= this.value * -1} else if(this.value>max){this.value=max}"
               [(ngModel)]="numRecords" name="numRecords" >
             </div>
@@ -45,9 +45,11 @@
             </div>
             <div class="col">
                 <select class="card-sm-body text-center" [(ngModel)]="selectedRecordType" (change)="recordtypewasselected=true" name="recordtypedropdown">
-                  <option *ngFor="let option of config.recordtypes" [value]="option">
-                    {{ option }}
-                  </option>
+                  <option value="JSON">JSON</option>
+                  <option value="CSV">CSV</option>
+                  <option value="TAB">Tab delimited</option>
+                  <option value="PIPE">| delimited</option>
+                  <option value="MYSQL">MySql script</option>
                 </select>
             </div>
           </div> <!-- END num records and type section -->
@@ -56,7 +58,7 @@
               <label for="filename" class="mr-2 font-weight-bold" data-toggle="" title="{{constants.tooltip_filename}}">File Name:</label>
             </div>
             <div class="col-sm-9">
-              <input type="text" class="form-control border-info" name="filename"
+              <input type="text" id="filename" class="form-control border-info" name="filename"
                   [(ngModel)]="filename" (keyup)="lettersOnly()">
             </div>
           </div> <!-- END file name section -->
@@ -65,7 +67,7 @@
               <label for="header" class="mr-2 font-weight-bold" data-toggle="" title="{{constants.tooltip_header}}">Header:</label>
             </div>
             <div class="col-sm-1">
-              <input type="checkbox" name="header" class="form-check-input" (change)="header=!header">
+              <input type="checkbox" id="header" name="header" class="form-check-input" (change)="header=!header">
             </div>
             <div class="col-sm-9"></div>
           </div> <!-- END header/footer section -->
@@ -74,7 +76,7 @@
               <label for="footer" class="mr-2 font-weight-bold" data-toggle="" title="{{constants.tooltip_footer}}">Footer:</label>
             </div>
             <div class="col-sm-1">
-              <input type="checkbox" name="footer" class="form-check-input" (change)="header=!header">
+              <input type="checkbox" id="footer" name="footer" class="form-check-input" (change)="header=!header">
             </div>
             <div class="col-sm-9"></div>
           </div>
@@ -162,7 +164,7 @@
                     </div>
                     <div class="col col-sm-4"></div>
                   </div>
-                  
+
                 <!-- listItem section -->
                 <div *ngIf="showListItemForm" >
                   <!-- messages section -->
@@ -198,7 +200,8 @@
                       data-toggle="" title="{{constants.tooltip_datatype}}">data type</label>
                     </div>
                     <div class="col">
-                      <input disabled type="text" class="form-control" [(ngModel)]="listItemBB.datatype" name="datatype">
+                      <input disabled type="text" class="form-control" id="datatype"
+                             [(ngModel)]="listItemBB.datatype" name="datatype">
                     </div>
                     <div class="col col-sm-4"></div>
                   </div> <!-- END data type field - edit mode only -->
@@ -209,17 +212,18 @@
                       class="mr-2">Field Name:</label>
                     </div>
                     <div class="col col-sm-9">
-                        <input type="text" [(ngModel)]="listItemBB.dataname" class="form-control border-info" name="dataname">
+                        <input type="text" id="dataname"
+                               [(ngModel)]="listItemBB.dataname" class="form-control border-info" name="dataname">
                     </div>
                   </div>
                   <!-- NULL % -->
                   <div class="row form-group mb-1">
                     <div class="col col-sm-2">
-                      <label for="nullpct" class="mr-2" 
+                      <label for="nullpct" class="mr-2"
                       data-toggle="" title="{{constants.tooltip_null}}">Null %:</label>
                     </div>
                     <div class="col col-sm-4">
-                        <input type="number" class="form-control border-info"
+                        <input type="number" id="nullpct" class="form-control border-info"
                         min="0" [max]="100-(listItemBB.blankpercent+listItemBB.invalidpercent)" name="nullpct"
                         onkeyup="if(this.value<0){this.value= this.value * -1} else if(this.value>max){this.value=max}"
                         [(ngModel)]="listItemBB.nullpercent"
@@ -231,7 +235,7 @@
                       data-toggle="" title="{{constants.tooltip_fixedlength}}">Fixed Length:</label>
                     </div>
                     <div class="col col-sm-3 btn-toolbar" role="toolbar" *ngIf="!fbb.hideStrFixedLengthYorN">
-                      <div class="btn-group-sm mr-2" name="fixedlgthYN" role="group">
+                      <div class="btn-group-sm mr-2" id="fixedlgthYN" name="fixedlgthYN" role="group">
                         <button type="button" [disabled]="listItemBB.isfixedlength"
                         (click)="useFixedLength('yes')" class="btn btn-white border-dark text-dark">YES</button>
                         <button type="button" [disabled]="!listItemBB.isfixedlength"
@@ -244,7 +248,7 @@
                       data-toggle="" title="{{constants.tooltip_date_time_selector}}">Type:</label>
                     </div>
                     <div class="col col-sm-4 btn-toolbar" role="toolbar" *ngIf="!fbb.hidedateOrTimeBtn">
-                      <div class="btn-group-sm mr-2" name="datetimebtn" role="group">
+                      <div class="btn-group-sm mr-2" id="datetimebtn" name="datetimebtn" role="group">
                         <button type="button" [disabled]="listItemBB.hasdate && !listItemBB.hastime"
                         (click)="dateTimeBtnChanged('date')" class="btn btn-white border-dark text-dark">DATE</button>
                         <button type="button" disabled
@@ -260,7 +264,7 @@
                       data-toggle="" title="{{constants.tooltip_ranged}}">Ranged Number:</label>
                     </div>
                     <div class="col col-sm-3 btn-toolbar" role="toolbar" *ngIf="!fbb.hideRangedValYorN">
-                      <div class="btn-group-sm mr-2" name="rangedYN" role="group">
+                      <div class="btn-group-sm mr-2" id="rangedYN" name="rangedYN" role="group">
                         <button type="button" [disabled]="listItemBB.isranged"
                         (click)="useRangedNum('yes')" class="btn btn-white border-dark text-dark">YES</button>
                         <button type="button" [disabled]="!listItemBB.isranged"
@@ -275,7 +279,7 @@
                       data-toggle="" title="{{constants.tooltip_blank}}">Blank %:</label>
                     </div>
                     <div class="col col-sm-4">
-                      <input type="number" class="form-control border-info"
+                      <input type="number" id="blankpct" class="form-control border-info"
                       min="0" [max]="100-(listItemBB.nullpercent+listItemBB.invalidpercent)" name="blankpct"
                       onkeyup="if(this.value<0){this.value= this.value * -1} else if(this.value>max){this.value=max}"
                       [(ngModel)]="listItemBB.blankpercent">
@@ -299,7 +303,7 @@
                       class="mb-2" style="padding-right: 5px;" >Min Value:</label>
                     </div>
                     <div class="col col-sm-4" *ngIf="!fbb.hideMinWholeVal">
-                        <input type="text" class="form-control border-info" name="minvalwhole"
+                        <input type="text" id="minvalwhole" class="form-control border-info" name="minvalwhole"
                         [(ngModel)]="listItemBB.minvaluestr" (keyup)="makeNumbersOnly(1)">
                     </div>
                     <!-- base value for whole -->
@@ -308,7 +312,7 @@
                       class="mb-2" style="padding-right: 5px;" >Base Value:</label>
                     </div>
                     <div class="col col-sm-4" *ngIf="!fbb.hideBaseVal">
-                        <input type="text" class="form-control border-info" name="basevalwhole"
+                        <input type="text" id="basevalwhole" class="form-control border-info" name="basevalwhole"
                         [(ngModel)]="listItemBB.basevaluestr" (keyup)="makeNumbersOnly(3)">
                     </div>
                     <!-- min value for decimal -->
@@ -317,7 +321,7 @@
                       class="mb-2" style="padding-right: 5px;" >Min Value:</label>
                     </div>
                     <div class="col col-sm-4" *ngIf="!fbb.hideMinDecVal">
-                        <input type="text" class="form-control border-info" name="minvaldec"
+                        <input type="text" id="minvaldec" class="form-control border-info" name="minvaldec"
                         [(ngModel)]="listItemBB.minvaluestr" (keyup)="makeNumbersOnly(1)">
                     </div>
                     <!-- base value for decimal -->
@@ -326,7 +330,7 @@
                       class="mb-2" style="padding-right: 5px;" >Base Value:</label>
                     </div>
                     <div class="col col-sm-4" *ngIf="!fbb.hideBaseDecimalVal">
-                        <input type="text" class="form-control border-info" name="basevaldec"
+                        <input type="text" id="basevaldec" class="form-control border-info" name="basevaldec"
                         [(ngModel)]="listItemBB.basevaluestr" (keyup)="makeNumbersOnly(3)">
                     </div>
                     <!--min length for string -->
@@ -336,7 +340,7 @@
                       data-toggle="" title="{{constants.tooltip_minlength}}">Min Length:</label>
                     </div>
                     <div class="col col-sm-4" *ngIf="!fbb.hideMinStrLgth">
-                        <input type="number" class="form-control border-info"
+                        <input type="number" id="minlength" class="form-control border-info"
                         [min]="config.stringOps.minlength" [max]="listItemBB.maxlength" name="minlength"
                         onkeyup="if(this.value<min){this.value=min} else if(this.value>max){this.value=max}"
                         [(ngModel)]="listItemBB.minlength"
@@ -349,14 +353,14 @@
                       data-toggle="" title="{{constants.tooltip_fixedlength}}">Fixed Length:</label>
                     </div>
                     <div class="col col-sm-4" *ngIf="!fbb.hideStrFixedLgth">
-                        <input type="number" class="form-control border-info"
+                        <input type="number" id="fixedlength" class="form-control border-info"
                         [min]="config.stringOps.minlength" [max]="config.stringOps.maxlength" name="fixedlength"
                         onkeyup="if(this.value<min){this.value=min} else if(this.value>max){this.value=max}"
                         [(ngModel)]="listItemBB.fixedlength"
                         >
                     </div>
                   </div>
-                  
+
                   <div class="row form-group mb-1">
                     <!-- Invalid % -->
                     <div class="col col-sm-2">
@@ -364,7 +368,7 @@
                       data-toggle="" title="{{constants.tooltip_invalid}}">Invalid %:</label>
                     </div>
                     <div class="col col-sm-4">
-                      <input type="number" class="form-control border-info"
+                      <input type="number" id="invalidpct" class="form-control border-info"
                       min="0" [max]="100-(listItemBB.blankpercent+listItemBB.nullpercent)" name="invalidpct"
                       onkeyup="if(this.value<0){this.value= this.value * -1} else if(this.value>max){this.value=max}"
                       [(ngModel)]="listItemBB.invalidpercent"  >
@@ -375,9 +379,9 @@
                       data-toggle="" title="{{constants.tooltip_datatype}}">Format:</label>
                     </div>
                     <div class="col col-sm-4" *ngIf="!fbb.hideFormat">
-                      <select class="form-control border-info text-center" 
-                      [(ngModel)]="listItemBB.format" 
-                      (change)="changeIncrements($event)" 
+                      <select id="formatdropdown" class="form-control border-info text-center"
+                      [(ngModel)]="listItemBB.format"
+                      (change)="changeIncrements($event)"
                       name="formatdropdown">
                         <option *ngFor="let option of datetimeoptions" [value]="option.value">
                           {{ option.viewValue }}
@@ -390,7 +394,7 @@
                       class="mb-2" style="padding-right: 5px;" >Max Value:</label>
                     </div>
                     <div class="col col-sm-4" *ngIf="!fbb.hideMaxWholeVal">
-                        <input type="text" class="form-control border-info" name="maxvalwhole"
+                        <input type="text" id="maxvalwhole" class="form-control border-info" name="maxvalwhole"
                         [(ngModel)]="listItemBB.maxvaluestr" (keyup)="makeNumbersOnly(2)">
                     </div>
                     <!-- incremental value for whole -->
@@ -399,7 +403,7 @@
                       class="mb-2" style="padding-right: 5px;" >Increment:</label>
                     </div>
                     <div class="col col-sm-4" *ngIf="!fbb.hideIncrementVal">
-                        <input type="text" class="form-control border-info" name="incvalwhole"
+                        <input type="text" id="incvalwhole" class="form-control border-info" name="incvalwhole"
                         [(ngModel)]="listItemBB.incrementstr" (keyup)="makeNumbersOnly(4)">
                     </div>
                     <!-- max value for decimal -->
@@ -408,7 +412,7 @@
                       class="mb-2" style="padding-right: 5px;" >Max Value:</label>
                     </div>
                     <div class="col col-sm-4" *ngIf="!fbb.hideMaxDecVal">
-                        <input type="text" class="form-control border-info" name="maxvaldec"
+                        <input type="text" id="maxvaldec" class="form-control border-info" name="maxvaldec"
                         [(ngModel)]="listItemBB.maxvaluestr" (keyup)="makeNumbersOnly(2)">
                     </div>
                     <!-- incremental value for decimal -->
@@ -417,18 +421,18 @@
                       class="mb-2" style="padding-right: 5px;" >Increment:</label>
                     </div>
                     <div class="col col-sm-4" *ngIf="!fbb.hideIncDecimalVal">
-                        <input type="text" class="form-control border-info" name="incvaldec"
+                        <input type="text" id="incvaldec" class="form-control border-info" name="incvaldec"
                         [(ngModel)]="listItemBB.incrementstr" (keyup)="makeNumbersOnly(4)">
                     </div>
                     <!--max length -->
                     <div class="col col-sm-2" *ngIf="!fbb.hideMaxStrLgth"
                       style="padding:5px;">
-                      <label for="maxlength" class="mr-2" 
+                      <label for="maxlength" class="mr-2"
                       data-toggle="" title="{{constants.tooltip_maxlength}}"
                       style="padding-right:5px;">Max Length:</label>
                     </div>
                     <div class="col col-sm-4" *ngIf="!fbb.hideMaxStrLgth">
-                        <input type="number" class="form-control border-info"
+                        <input type="number" id="maxlength" class="form-control border-info"
                         [min]="listItemBB.minlength" [max]="config.stringOps.maxlength" name="maxlength"
                         onkeyup="if(this.value<min){this.value=min} else if(this.value>max){this.value=max}"
                         [(ngModel)]="listItemBB.maxlength"
@@ -439,7 +443,7 @@
                     <!-- checkboxes -->
                     <div class="row" >
                       <div class="col col-sm-12">
-                        <p class="font-weight-bold text-center" 
+                        <p class="font-weight-bold text-center"
                         data-toggle="" title="{{constants.tooltip_exclusions}}">{{ constants.middle_str_chkbx }}</p>
                       </div>
                     </div>
@@ -447,28 +451,28 @@
                       <div class="col col-sm-1"></div>
                       <div class="col col-sm-2 form-check-inline">
                         <label class="form-check-label" data-toggle="" title="{{constants.tooltip_lowercase_bx}}">
-                          <input type="checkbox" 
+                          <input type="checkbox"
                           [checked]="listItemBB.allowlowers" (change)="listItemBB.allowlowers=!listItemBB.allowlowers"
                           class="form-check-input" value="L">Lowercase
                         </label>
                       </div>
                       <div class="col col-sm-2 form-check-inline">
                         <label class="form-check-label" data-toggle="" title="{{constants.tooltip_uppercase_bx}}">
-                          <input type="checkbox" 
+                          <input type="checkbox"
                           [checked]="listItemBB.allowuppers" (change)="listItemBB.allowuppers=!listItemBB.allowuppers"
                           class="form-check-input" value="U">Uppercase
                         </label>
                       </div>
                       <div class="col col-sm-2 form-check-inline">
                         <label class="form-check-label" data-toggle="" title="{{constants.tooltip_numbers_bx}}">
-                          <input type="checkbox" 
+                          <input type="checkbox"
                           [checked]="listItemBB.allownumbers" (change)="listItemBB.allownumbers=!listItemBB.allownumbers"
                           class="form-check-input" value="N">Numbers
                         </label>
                       </div>
                       <div class="col col-sm-4 form-check-inline">
                         <label class="form-check-label" data-toggle="" title="{{constants.tooltip_specials_bx}}">
-                          <input type="checkbox" 
+                          <input type="checkbox"
                           [checked]="listItemBB.allowspecials" (change)="listItemBB.allowspecials=!listItemBB.allowspecials"
                           class="form-check-input" value="S">Special Characters
                         </label>
@@ -483,20 +487,20 @@
                       data-toggle="" title="{{constants.tooltip_signdigits}}">Significant Digits:</label>
                     </div>
                     <div class="col col-sm-4">
-                      <input type="number" class="form-control border-info"
+                      <input type="number" id="signdigits" class="form-control border-info"
                       min="0" [max]="100" name="signdigits"
                       onkeyup="if(this.value<0){this.value= this.value * -1} else if(this.value>max){this.value=max}"
                       [(ngModel)]="listItemBB.signdigits"  >
                     </div>
                   </div>
-                  <div class="row form-group mb-1">
-                    <!-- Distinct Option -->
+                  <!--<div class="row form-group mb-1">
+                    &lt;!&ndash; Distinct Option &ndash;&gt;
                     <div class="col col-sm-3" *ngIf="!fbb.hideDstnctYorN">
                       <label for="distinct" class="mr-2"
                       data-toggle="" title="{{constants.tooltip_distinct}}">Distinct Values:</label>
                     </div>
                     <div class="col col-sm-3 btn-toolbar" role="toolbar" *ngIf="!fbb.hideDstnctYorN">
-                      <div class="btn-group-sm mr-2" name="distinct" role="group">
+                      <div class="btn-group-sm mr-2" id="distinct" name="distinct" role="group">
                         <button type="button" [disabled]="listItemBB.usedistinctvals"
                         (click)="useDistincts('yes')" class="btn btn-white border-dark text-dark">YES</button>
                         <button type="button" [disabled]="!listItemBB.usedistinctvals"
@@ -508,13 +512,13 @@
                       data-toggle="" title="{{constants.tooltip_total_distinct}}">Total:</label>
                     </div>
                     <div class="col col-sm-4" *ngIf="!fbb.hideDstnctFld">
-                        <input type="number" class="form-control border-info"
+                        <input type="number" id="numdistinct" class="form-control border-info"
                         [min]="1" [max]="numRecords" name="numdistinct"
                         onkeyup="if(this.value<min){this.value=min} else if(this.value>max){this.value=max}"
                         [(ngModel)]="listItemBB.distinctvalues"
                         >
                     </div>
-                  </div>
+                  </div>-->
                   <!-- REGEXP pattern-->
                   <div class="row form-group mb-1">
                     <div class="col col-sm-3" *ngIf="!fbb.hidePatternYorN">
@@ -522,7 +526,7 @@
                       data-toggle="" title="{{constants.tooltip_usepattern}}">Use Expression:</label>
                     </div>
                     <div class="col col-sm-3 btn-toolbar" role="toolbar" *ngIf="!fbb.hidePatternYorN">
-                      <div class="btn-group-sm mr-2" name="strexprYN" role="group">
+                      <div class="btn-group-sm mr-2" id="strexprYN" name="strexprYN" role="group">
                         <button type="button" [disabled]="listItemBB.usepattern"
                         (click)="usePattern('yes')" class="btn btn-white border-dark text-dark">YES</button>
                         <button type="button" [disabled]="!listItemBB.usepattern"
@@ -535,7 +539,7 @@
                       data-toggle="" title="{{constants.tooltip_pattern}}">Pattern:</label>
                     </div>
                     <div class="col col-sm-4" *ngIf="!fbb.hideStrPtrnTxt" >
-                        <input type="text" 
+                        <input type="text" id="pattern"
                         #pattern="ngModel" class="form-control border-info"
                         [ngClass]="{'is-invalid':pattern.errors && pattern.touched}"
                         [(ngModel)]="listItemBB.pattern" name="pattern"
@@ -556,9 +560,9 @@
                       data-toggle="" title="{{constants.tooltip_startdte}}">Start Date:</label>
                     </div>
                     <div class="col col-sm-4" *ngIf="!fbb.hideStrtDte">
-                      <input type="date" [(ngModel)]="listItemBB.startdatetime"
-                      (change)="dateChangeAction('start')" 
-                      class="form-control" name="startdate"> 
+                      <input type="date" id="startdate" [(ngModel)]="listItemBB.startdatetime"
+                      (change)="dateChangeAction('start')"
+                      class="form-control" name="startdate">
                     </div>
                     <!-- end date for date/time field -->
                     <div class="col col-sm-2" *ngIf="!fbb.hideEndDte">
@@ -566,9 +570,9 @@
                       data-toggle="" title="{{constants.tooltip_enddte}}">End Date:</label>
                     </div>
                     <div class="col col-sm-4" *ngIf="!fbb.hideEndDte">
-                      <input type="date" [(ngModel)]="listItemBB.enddatetime" 
+                      <input type="date" id="enddate" [(ngModel)]="listItemBB.enddatetime"
                       (change)="dateChangeAction('end')"
-                      class="form-control" name="enddate"> 
+                      class="form-control" name="enddate">
                     </div>
                     <!-- base date for date/time field -->
                     <div class="col col-sm-2" *ngIf="!fbb.hideBaseDte">
@@ -576,9 +580,9 @@
                       data-toggle="" title="{{constants.tooltip_basedte}}">Base Date:</label>
                     </div>
                     <div class="col col-sm-4" *ngIf="!fbb.hideBaseDte">
-                      <input type="date" [(ngModel)]="listItemBB.basedatetime" 
+                      <input type="date" [(ngModel)]="listItemBB.basedatetime"
                       (change)="dateChangeAction('base')"
-                      class="form-control" name="startdate"> 
+                      class="form-control" name="startdate">
                     </div>
                     <div class="col col-sm-6" *ngIf="!fbb.hideBaseDte">
                       Increments
@@ -591,7 +595,7 @@
                       data-toggle="" title="{{constants.tooltip_yr_inc}}">Year:</label>
                     </div>
                     <div class="col col-sm-4" *ngIf="!fbb.hideYrsInc">
-                      <input type="number" class="form-control border-info" name="yearinc"
+                      <input type="number" id="yearinc" class="form-control border-info" name="yearinc"
                       min="0" onkeyup="if(this.value<0){this.value= this.value * -1}"
                       [(ngModel)]="listItemBB.inc_yr_str">
                     </div>
@@ -600,7 +604,7 @@
                       data-toggle="" title="{{constants.tooltip_hr_inc}}">Hours:</label>
                     </div>
                     <div class="col col-sm-4" *ngIf="!fbb.hideHrsInc">
-                      <input type="number" class="form-control border-info" name="hoursinc"
+                      <input type="number" id="hoursinc" class="form-control border-info" name="hoursinc"
                       min="0" onkeyup="if(this.value<0){this.value= this.value * -1}"
                       [(ngModel)]="listItemBB.inc_hrs_str">
                     </div>
@@ -611,7 +615,7 @@
                       data-toggle="" title="{{constants.tooltip_mnth_inc}}">Months:</label>
                     </div>
                     <div class="col col-sm-4" *ngIf="!fbb.hideMthsInc">
-                      <input type="number" class="form-control border-info" name="monthsinc"
+                      <input type="number" id="monthsinc" class="form-control border-info" name="monthsinc"
                       min="0" onkeyup="if(this.value<0){this.value= this.value * -1}"
                       [(ngModel)]="listItemBB.inc_mth_str">
                     </div>
@@ -620,7 +624,7 @@
                       data-toggle="" title="{{constants.tooltip_hr_inc}}">Minutes:</label>
                     </div>
                     <div class="col col-sm-4" *ngIf="!fbb.hideMinInc">
-                      <input type="number" class="form-control border-info" name="minutesinc"
+                      <input type="number" id="minutesinc" class="form-control border-info" name="minutesinc"
                       min="0" onkeyup="if(this.value<0){this.value= this.value * -1}"
                       [(ngModel)]="listItemBB.inc_min_str">
                     </div>
@@ -631,7 +635,7 @@
                       data-toggle="" title="{{constants.tooltip_day_inc}}">Days:</label>
                     </div>
                     <div class="col col-sm-4" *ngIf="!fbb.hideDaysInc">
-                      <input type="number" class="form-control border-info" name="daysinc"
+                      <input type="number" id="daysinc" class="form-control border-info" name="daysinc"
                       min="0" onkeyup="if(this.value<0){this.value= this.value * -1}"
                       [(ngModel)]="listItemBB.inc_day_str">
                     </div>
@@ -640,7 +644,7 @@
                       data-toggle="" title="{{constants.tooltip_sec_inc}}">Seconds:</label>
                     </div>
                     <div class="col col-sm-4" *ngIf="!fbb.hideHrsInc">
-                      <input type="number" class="form-control border-info" name="secondsinc"
+                      <input type="number" id="secondsinc" class="form-control border-info" name="secondsinc"
                       min="0" onkeyup="if(this.value<0){this.value= this.value * -1}"
                       [(ngModel)]="listItemBB.inc_sec_str">
                     </div>
@@ -652,7 +656,7 @@
                       class="mr-2">Include Characters:</label>
                     </div>
                     <div class="col col-sm-9">
-                        <input type="text" class="form-control border-info" [(ngModel)]="listItemBB.inclusions" name="inclusions" >
+                        <input type="text" id="inclusions" class="form-control border-info" [(ngModel)]="listItemBB.inclusions" name="inclusions" >
                     </div>
                   </div>
                   <!-- EXCLUSIONS for String only -->
@@ -662,11 +666,11 @@
                       class="mr-2">Exclude Characters:</label>
                     </div>
                     <div class="col col-sm-9">
-                        <input type="text" class="form-control border-info" [(ngModel)]="listItemBB.exclusions"  name="exclusions">
+                        <input type="text" id="exclusions" class="form-control border-info" [(ngModel)]="listItemBB.exclusions"  name="exclusions">
                     </div>
                   </div>
                   <!-- Save Changes and Cancel buttons -->
-                  <button *ngIf="datatypeselected" (click)="saveResults('yes')" 
+                  <button *ngIf="datatypeselected" (click)="saveResults('yes')"
                   [disabled]="!enableSaveBtn()"
                   class="btn btn-sm btn-block btn-success text-white mb-3 font-italic">{{this.saveChangesMsg}}</button>
                   <button *ngIf="addMode && datatypeselected || editMode" (click)="saveResults('no')" class="btn btn-sm btn-block btn-danger text-white mb-3 font-italic">{{this.cancelMsg}}</button>
@@ -675,7 +679,7 @@
               <button *ngIf="addMode && !datatypeselected" name="outtercancelbtn" (click)="resetModes()" class="btn btn-sm btn-block btn-danger text-white mb-3 font-italic">Cancel Add Item</button>
             </div> <!-- END show form tag -->
           </div> <!-- END form section-->
-          
+
         </div> <!-- END table and form section -->
       </div> <!-- END loading section -->
     </div> <!-- END middle column -->
@@ -690,7 +694,7 @@
         </div>
         <div *ngIf="loaded">
           <div class="row">
-            <div class="col-sm-12"> 
+            <div class="col-sm-12">
               <p>{{ constants.right_msg2 }}</p>
             </div>
           </div>
@@ -701,8 +705,8 @@
               class="btn btn-sm btn-block btn-success text-white mb-3 font-italic">{{this.finishedMessage}}</button>
             </div>
           </div>
-          <div class="row"> 
-            <div class="col-sm-12"> 
+          <div class="row">
+            <div class="col-sm-12">
               <p>-----------------------</p>
               <p>{{ constants.right_msg3 }}</p>
               <p>-----------------------</p>
@@ -724,6 +728,6 @@
 </div>
 <script>
   $(document).ready(function(){
-    $('[data-toggle="xxx"]').tooltip();   
+    $('[data-toggle="xxx"]').tooltip();
   });
   </script>

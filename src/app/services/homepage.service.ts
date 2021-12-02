@@ -8,20 +8,23 @@ import { InitialConfig } from '../models/InitialConfig';
 import { UserConfig } from '../models/UserConfig';
 
 const httpOptions = {
-  headers: new HttpHeaders({'Content-Type': 'application/json'})
+  responseType: 'blob',
+  headers: new HttpHeaders({'Accept': 'application/json'})
 }
 
 @Injectable()
 export class HomePageService {
   getConfigURL: string = 'http://localhost:8081/testdata-gen/config';
-  postUserConfig: string = 'http://localhost:8081/testdata-gen/userconfig';
+  postUserConfig: string = 'http://localhost:8081/testdata-gen/makedata';
   constructor(private http: HttpClient) { }
 
   getPageConfig(): Observable<InitialConfig> {
     return this.http.get<InitialConfig>(this.getConfigURL);
   }
 
-  createServingTypes(data: UserConfig): Observable<UserConfig> {
-		return this.http.post<UserConfig>(this.postUserConfig, data, httpOptions);
+  createServingTypes(data: UserConfig, type: String): Observable<any> {
+		return this.http.post(this.postUserConfig, data, { observe : 'response' ,
+      responseType : 'blob',
+      headers: new HttpHeaders({'Accept': "'" + type + "'"})});
 	}
 }
