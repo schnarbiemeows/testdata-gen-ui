@@ -22,7 +22,7 @@ export class HomePageService {
     return this.http.get<InitialConfig>(this.getConfigURL);
   }
 
-  createServingTypes(data: UserConfig, type: String): Observable<any> {
+  makeData(data: UserConfig, type: String): Observable<any> {
 		return this.http.post(this.postUserConfig, data, { observe : 'response' ,
       responseType : 'blob',
       headers: new HttpHeaders({'Accept': "'" + type + "'"})});

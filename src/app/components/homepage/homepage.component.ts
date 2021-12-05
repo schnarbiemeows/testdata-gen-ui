@@ -13,7 +13,7 @@ import * as FileSaver from "file-saver";
 
 @Component({
   selector: 'app-homepage',
-  templateUrl: './homepage.component.html',
+  templateUrl: './homepage2.component.html',
   styleUrls: ['./homepage.component.css']
 })
 export class HomePageComponent implements OnInit {
@@ -24,8 +24,8 @@ export class HomePageComponent implements OnInit {
   selectedRecordType: string = '';
   fileExtension: string = "json";
   filename: string;
-  header: boolean;
-  footer: boolean;
+  header: boolean = false;
+  footer: boolean = false;
   loginid: number = 100;
   dataconfigname: string = "TEST";
   fieldsList: ListItem[];  // these are our fields, go inside UserConfig
@@ -53,10 +53,10 @@ export class HomePageComponent implements OnInit {
     {value: 'datetime', viewValue: 'Date/Time'}
   ];
   datetimeoptions: DataTypeOptions[] = [
-    {value: 'YYYY/MM/DD', viewValue: 'YYYY/MM/DD'},
-    {value: 'YYYY-MM-DD', viewValue: 'YYYY-MM-DD'},
-    {value: 'YYYYMMDD', viewValue: 'YYYYMMDD'},
-    {value: 'MMM DD, YYYY', viewValue: 'MMM DD, YYYY'}
+    {value: 'uuuu/MM/dd', viewValue: 'YYYY/MM/DD'},
+    {value: 'uuuu-MM-dd', viewValue: 'YYYY-MM-DD'},
+    {value: 'uuuuMMdd', viewValue: 'YYYYMMDD'},
+    {value: 'MMM dd, uuuu', viewValue: 'MMM DD, YYYY'}
   ];
   datatypeselected: boolean = false;
   selectedValue: string = '';
@@ -98,13 +98,15 @@ export class HomePageComponent implements OnInit {
     let fileType = "text/plain"
     if(this.selectedRecordType == "JSON") {
       fileType = "application/json";
-      this.fileExtension = "json"
+      this.fileExtension = "json";
+      this.footer = false;
     } else if(this.selectedRecordType == "CSV") {
-      this.fileExtension = "csv"
+      this.fileExtension = "csv";
     } else if(this.selectedRecordType == "TAB" || this.selectedRecordType == "PIPE") {
-      this.fileExtension = "txt"
+      this.fileExtension = "txt";
     } else if(this.selectedRecordType == "MYSQL") {
-      this.fileExtension = "sql"
+      this.fileExtension = "sql";
+      this.footer = false;
     }
     this.userconfig = new UserConfig();
     this.userconfig.fields = this.fieldsList;
@@ -114,7 +116,7 @@ export class HomePageComponent implements OnInit {
     this.userconfig.format = this.selectedRecordType;
     this.userconfig.numfiles = 1;
     this.userconfig.numrecords = this.numRecords;
-    this.homepageservice.createServingTypes(this.userconfig, fileType).subscribe(response => {
+    this.homepageservice.makeData(this.userconfig, fileType).subscribe(response => {
       console.log(response.body);
       var blob = new Blob([response.body], {type: fileType});
       FileSaver.saveAs(blob, this.userconfig.filename+"."+this.fileExtension);
@@ -164,10 +166,10 @@ export class HomePageComponent implements OnInit {
       this.listItemBB.hasdate = true;
       this.listItemBB.hastime = false;
       this.datetimeoptions = [
-        {value: 'YYYY/MM/DD', viewValue: 'YYYY/MM/DD'},
-        {value: 'YYYY-MM-DD', viewValue: 'YYYY-MM-DD'},
-        {value: 'YYYYMMDD', viewValue: 'YYYYMMDD'},
-        {value: 'MMM DD, YYYY', viewValue: 'MMM DD, YYYY'}
+        {value: 'uuuu/MM/dd', viewValue: 'YYYY/MM/DD'},
+        {value: 'uuuu-MM-dd', viewValue: 'YYYY-MM-DD'},
+        {value: 'uuuuMMdd', viewValue: 'YYYYMMDD'},
+        {value: 'MMM dd, uuuu', viewValue: 'MMM DD, YYYY'}
       ];
       if(this.listItemBB.isranged == true) {
         this.fbb.hideYrsInc = false;
@@ -204,9 +206,9 @@ export class HomePageComponent implements OnInit {
       this.listItemBB.hasdate = true;
       this.listItemBB.hastime = true;
       this.datetimeoptions = [
-        {value: 'YYYY/MM/DD HH:mm:ss', viewValue: 'YYYY/MM/DD HH:mm:ss'},
-        {value: 'YYYY-MM-DD HH:mm:ss', viewValue: 'YYYY-MM-DD HH:mm:ss'},
-        {value: 'YYYYMMDDHHmmss', viewValue: 'YYYYMMDDHHmmss'}
+        {value: 'uuuu/MM/dd HH:mm:ss', viewValue: 'YYYY/MM/DD HH:mm:ss'},
+        {value: 'uuuu-MM-dd HH:mm:ss', viewValue: 'YYYY-MM-DD HH:mm:ss'},
+        {value: 'uuuuMMddHHmmss', viewValue: 'YYYYMMDDHHmmss'}
       ];
       if(this.listItemBB.isranged == true) {
         this.fbb.hideYrsInc = false;
@@ -628,18 +630,21 @@ export class HomePageComponent implements OnInit {
             issue = true;
             break;
           }
-          let startdate = new Date();
+          let startdate = new Date(this.listItemBB.startdatetime);
           //console.log("start date string is = " + this.listItemBB.startdatetime);
-          startdate.setDate(+this.listItemBB.startdatetime.substring(8,10));
+          /*startdate.setDate(+this.listItemBB.startdatetime.substring(8,10));
           startdate.setMonth(+this.listItemBB.startdatetime.substring(5,7));
-          startdate.setFullYear(+this.listItemBB.startdatetime.substring(0,4));
-          let enddate = new Date();
+          startdate.setFullYear(+this.listItemBB.startdatetime.substring(0,4));*/
+          let enddate = new Date(this.listItemBB.enddatetime);
           //console.log("end date string is = " + this.listItemBB.enddatetime);
-          enddate.setDate(+this.listItemBB.enddatetime.substring(8,10));
+          /*enddate.setDate(+this.listItemBB.enddatetime.substring(8,10));
           enddate.setMonth(+this.listItemBB.enddatetime.substring(5,7));
-          enddate.setFullYear(+this.listItemBB.enddatetime.substring(0,4));
-          //console.log("startdate is = " + startdate + " , enddate is = " + enddate);
-          if(enddate < startdate) {
+          enddate.setFullYear(+this.listItemBB.enddatetime.substring(0,4));*/
+          console.log("startdate is = " + startdate + " , enddate is = " + enddate);
+          //let diff = enddate. - startdate.getMilliseconds();
+          let diff = enddate>startdate;
+          console.log("enddate>startdate = " + diff);
+          if(enddate<=startdate) {
             this.saveChangesMsg = this.constants.error_endbeforestart;
             issue = true;
             break;
@@ -981,7 +986,6 @@ export class HomePageComponent implements OnInit {
 
   onSelectedDataType(e) {
     //console.log("selected the data type ....")
-    console.log("selected value is : " + this.selectedValue)
     this.clearOutFormBackingBean();
     this.showListItemForm = true;
     this.datatypeselected = true;
@@ -991,6 +995,7 @@ export class HomePageComponent implements OnInit {
       // have to set the display booleans for the individual fields
       this.fbb.turnOnString();
       this.listItemBB.datatype = "string";
+      this.usePattern('no');
     }
     else if(this.selectedValue === "whole") {
       //console.log("showing whole form")
@@ -1066,7 +1071,6 @@ export class HomePageComponent implements OnInit {
       startdatetime: '',
       enddatetime: '',
       basedatetime: '',
-      basetimetime: '',
       inc_yr_str: 0,
       inc_mth_str: 0,
       inc_day_str: 0,
@@ -1131,7 +1135,6 @@ export class HomePageComponent implements OnInit {
       startdatetime: '',
       enddatetime: '',
       basedatetime: '',
-      basetimetime: '',
       inc_yr_str: 0,
       inc_mth_str: 0,
       inc_day_str: 0,
@@ -1140,10 +1143,10 @@ export class HomePageComponent implements OnInit {
       inc_sec_str: 0
     };
     this.datetimeoptions = [
-      {value: 'YYYY/MM/DD', viewValue: 'YYYY/MM/DD'},
-      {value: 'YYYY-MM-DD', viewValue: 'YYYY-MM-DD'},
-      {value: 'YYYYMMDD', viewValue: 'YYYYMMDD'},
-      {value: 'MMM DD, YYYY', viewValue: 'MMM DD, YYYY'}
+      {value: 'uuuu/MM/dd', viewValue: 'YYYY/MM/DD'},
+      {value: 'uuuu-MM-dd', viewValue: 'YYYY-MM-DD'},
+      {value: 'uuuuMMdd', viewValue: 'YYYYMMDD'},
+      {value: 'MMM dd, uuuu', viewValue: 'MMM DD, YYYY'}
     ];
     //console.log("string customer id = " + this.listItemBB.customerid)
   }

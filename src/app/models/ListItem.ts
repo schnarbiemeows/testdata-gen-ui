@@ -49,7 +49,6 @@ export class ListItem {
   startdatetime: string;
   enddatetime: string;
   basedatetime: string;
-  basetimetime: string;
   inc_yr_str: number;
   inc_mth_str: number;
   inc_day_str: number;

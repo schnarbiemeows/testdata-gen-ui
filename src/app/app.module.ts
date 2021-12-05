@@ -4,15 +4,17 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule  } from '@angular/Forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NavbarComponent } from './components/navbar/navbar.component';
 import { HomePageComponent } from './components/homepage/homepage.component';
 import { HomePageService } from './services/homepage.service';
+import {HeaderNavComponent} from "./shared/header-nav/header-nav.component";
+import {AboutComponent} from "./about/about/about.component";
 
 @NgModule({
   declarations: [
     AppComponent,
-  NavbarComponent,
-  HomePageComponent
+    AboutComponent,
+    HeaderNavComponent,
+    HomePageComponent
 
   ],
   imports: [
@@ -20,7 +22,7 @@ import { HomePageService } from './services/homepage.service';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule 
+    ReactiveFormsModule
   ],
   providers: [HomePageService],
   bootstrap: [AppComponent]

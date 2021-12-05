@@ -16,16 +16,18 @@ export class FormFieldBooleans {
   hideDstnctYorN: boolean = true; // asks if we want discrete values
   hideDstnctFld: boolean = true; // number of discrete fields
   // string fields
+  showStringFieldForm:boolean = false;
   hideStrFixedLengthYorN: boolean = true;
   hideStrFixedLgth: boolean = true;
-  hideMinStrLgth: boolean = true; 
-  hideMaxStrLgth: boolean = true; 
+  hideMinStrLgth: boolean = true;
+  hideMaxStrLgth: boolean = true;
   hideStrChckbxs: boolean = true;
   hidePatternYorN: boolean = true;
   hideStrPtrnTxt: boolean = true;
   hideInclusions: boolean = true;
   hideExclusions: boolean = true;
   // whole number fields
+  showWholeNumberFieldForm:boolean = false;
   hideRangedValYorN: boolean = true;
   hideBaseVal: boolean = true;
   hideIncrementVal: boolean = true;
@@ -33,12 +35,14 @@ export class FormFieldBooleans {
   hideMaxWholeVal: boolean = true;
 
   // decimal number fields
+  showDecimalNumberFieldForm:boolean = false;
   hideMinDecVal: boolean = true;
   hideMaxDecVal: boolean = true;
   hideBaseDecimalVal: boolean = true;
   hideIncDecimalVal: boolean = true;
   hideSignDigits: boolean = true;
   // date/time fields
+  showDateTimeFieldForm:boolean = false;
   hidedateOrTimeBtn: boolean = true;
   hideRangedDteYorN: boolean = true;
   hideFormat: boolean = true;
@@ -54,10 +58,18 @@ export class FormFieldBooleans {
   hideSecInc: boolean = true;
 
   // boolean fields
-
+  showBooleanFieldForm:boolean = false;
   // special fields
+  showSpecialFieldsForm:boolean = false;
 
   hideAll() {
+    this.showStringFieldForm = false;
+    this.showWholeNumberFieldForm = false;
+    this.showDecimalNumberFieldForm = false;
+    this.showDateTimeFieldForm = false;
+    this.showBooleanFieldForm = false;
+    this.showSpecialFieldsForm = false;
+
     this.hideStringMsg = true;
     this.hideWholeMsg = true;
     this.hideNumberMsg = true;
@@ -68,7 +80,7 @@ export class FormFieldBooleans {
     this.hideNullPct = true;
     this.hideBlankPct = true;
     this.hideInvalidPct = true;
-    this.hideDstnctYorN = true; 
+    this.hideDstnctYorN = true;
     this.hideDstnctFld = true;
     // string
     this.hideStrFixedLengthYorN = true;
@@ -110,16 +122,17 @@ export class FormFieldBooleans {
   turnOnMains() {
     this.hideFieldName = false;
     this.hideNullPct = false;
-    this.hideBlankPct = false;
-    this.hideInvalidPct = false;
+    /*this.hideBlankPct = false;
+    this.hideInvalidPct = false;*/
   }
   turnOnString() {
     this.hideAll();
     this.turnOnMains();
+    this.showStringFieldForm = true;
     this.hideStringMsg = false;
-    this.hideDstnctYorN = false; 
+    this.hideDstnctYorN = false;
     this.hideDstnctFld = true;
-    this.hideMinStrLgth = false;  
+    this.hideMinStrLgth = false;
     this.hideMaxStrLgth = false;
     this.hideStrFixedLengthYorN = false;
     this.hideStrFixedLgth = true;
@@ -127,16 +140,19 @@ export class FormFieldBooleans {
     this.hideStrPtrnTxt = true;
     this.hideInclusions = false;
     this.hideExclusions = false;
+    /*this.hidePatternYorN = false;
+    this.hideStrPtrnTxt = false;*/
   }
 
   turnOnWhole() {
     this.hideAll();
     this.turnOnMains();
+    this.showWholeNumberFieldForm = true;
     this.hideWholeMsg = false;
     this.hideRangedValYorN = false;
     this.hideBaseVal = true;
     this.hideIncrementVal = true;
-    this.hideDstnctYorN = false; 
+    this.hideDstnctYorN = false;
     this.hideDstnctFld = true;
     this.hideMinWholeVal = false;
     this.hideMaxWholeVal = false;
@@ -145,7 +161,8 @@ export class FormFieldBooleans {
   turnOnNumber() {
     this.hideAll();
     this.turnOnMains();
-    this.hideDstnctYorN = false; 
+    this.showDecimalNumberFieldForm = true;
+    this.hideDstnctYorN = false;
     this.hideDstnctFld = true;
     this.hideNumberMsg = false;
     this.hideMinDecVal = false;
@@ -159,6 +176,7 @@ export class FormFieldBooleans {
   turnOnDateTime() {
     this.hideAll();
     this.turnOnMains();
+    this.showDateTimeFieldForm = true;
     this.hideDstnctYorN = false; // always show this button
     this.hideDstnctFld = true; // because inital setting is usedistinctvals = false
     this.hideDateTimeMsg = false;
@@ -180,14 +198,16 @@ export class FormFieldBooleans {
   turnOnBoolean() {
     this.hideAll();
     this.turnOnMains();
+    this.showBooleanFieldForm = true;
     this.hideBooleanMsg = false;
   }
 
   turnOnSpecial() {
     this.hideAll();
     this.turnOnMains();
+    this.showSpecialFieldsForm = true;
     this.hideSpecialMsg = false;
-    this.hideDstnctYorN = false; 
+    this.hideDstnctYorN = false;
     this.hideDstnctFld = true;
   }
 
