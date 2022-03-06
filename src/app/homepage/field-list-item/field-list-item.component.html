@@ -1,0 +1,22 @@
+<tr class="d-flex">
+  <td [hidden]="true">{{ i + 1 }}</td>
+  <td class="col-4 text-center">
+    <i class="text-size-8">{{item.dataname}}</i>
+  </td>
+  <td class="col-2 text-center">
+    <i class="text-size-8">{{item.datatype}}</i>
+  </td>
+  <td class="col-2 text-center">
+    <i class="text-size-8">{{item.nullpercent}}</i>
+  </td>
+  <td class="col-2 text-center">
+    <button class="btn-edit" type="submit" [disabled]="addMode || editMode" (click)="editItem(i)">
+      <span class="iconspan fa fa-edit"></span>
+    </button>
+  </td>
+  <td class="col-2 text-center">
+    <button class="btn-edit" type="submit" [disabled]="addMode || editMode" (click)="deleteItem(i)">
+      <span class="iconspan fa fa-trash-o"></span>
+    </button>
+  </td>
+</tr>

@@ -1,0 +1,40 @@
+<div class="card border-info"> <!-- table section -->
+  <div class="card-body table-responsive">
+    <table class="table table-bordered table-hover rounded">
+      <thead>
+      <tr class="d-flex">
+        <th class="col-4 text-center">
+          <i class="text-size-10 p-3">field name</i>
+        </th>
+        <th class="col-2 text-center">
+          <i class="text-size-10 p-3">data type</i>
+        </th>
+        <th class="col-2 text-center">
+          <i class="text-size-8 p-3">null %</i>
+        </th>
+        <!--<th>
+          <i class="text-size-8">blank %</i>
+        </th>
+        <th>
+          <i class="text-size-8">invalid %</i>
+        </th>-->
+        <th class="col-2 text-center">
+          <i class="text-size-8 p-1 pt-3">edit item</i>
+        </th>
+        <th class="col-2 text-center">
+          <i class="text-size-8 p-1 pt-3">remove item</i>
+        </th>
+      </tr>
+      </thead>
+      <tbody *ngFor="let dto of fieldsList; let i = index">
+      <app-field-list-item
+        [i]="i"
+        [item]="dto"
+        [addMode]="addMode"
+        [editMode]="editMode"
+        (onEdit)="receiveAndRelayEdit($event)"
+        (onDelete)="receiveAndRelayDelete($event)"></app-field-list-item>
+      </tbody>
+    </table>
+  </div>
+</div> <!-- END table section -->

@@ -1,0 +1,188 @@
+<header-nav></header-nav>
+<div class="container-fluid border rounded">
+  <div class="row" style="height:900px;">
+    <div class="col col-sm-3 mh-100">
+      <div class="card bg-light p-2 border-info">
+        <p class="font-weight-bold text-center">{{ constants.left_msg1 }}</p>
+
+        <div  class="mh-100">
+          <p>----------------------------------------------------------------</p>
+          <p>{{ constants.left_msg2 }} 1000 {{ constants.left_msg3 }}</p>
+          <p>----------------------------------------------------------------</p>
+          <p>{{ constants.left_msg3b }}</p>
+          <p class="mt-3">{{ constants.left_msg4 }}</p>
+          <p>{{ constants.left_msg5 }}</p>
+          <p>{{ constants.left_msg5_2 }}</p>
+          <p>{{ constants.left_msg6 }}</p>
+          <p>----------------------------------------------------------------</p>
+          <p class="font-weight-bold">{{ constants.left_msg7 }}</p>
+          <p class="font-weight-bold">{{ constants.left_msg8 }}</p>
+        </div>
+      </div>
+    </div>
+    <!-- middle column -->
+    <div class="col-6">
+        <app-record-info
+        [numRecords]="numRecords"
+        [fileName]="fileName"
+        [format]="format"
+        (recordtypewasselected)="receiveAndRelayRecordFormatChange($event)"
+        (numRecSelected)="receiveAndRelayNumRecordsChange($event)"
+        (filenameletters)="receiveAndRelayFileNameChange($event)">
+        </app-record-info>
+        <div *ngIf="recordTypeWasSelected"> <!-- table and form section -->
+          <app-field-list
+            [fieldsList]="fieldsList"
+            [addMode]="addMode"
+            [editMode]="editMode"
+            (relayEdit)="receiveAndRelayInitiateEdit($event)"
+            (relayDelete)="receiveAndRelayDelete($event)">
+          </app-field-list>
+          <div class="card border-info"> <!-- form section -->
+            <button *ngIf="!editMode" [hidden]="addMode" (click)="initiateAdd()" class="btn btn-sm btn-outline-info mb-3 mt-3 font-italic">Add Field</button>
+            <h6 class="text-center font-italic text-info" *ngIf="addMode && !editMode">Add a new Field</h6>
+            <h6 class="text-center font-italic text-info" *ngIf="!addMode && editMode">Edit Field</h6>
+            <div class="card card-body mb-3 border-info" *ngIf="addMode || editMode">
+              <!-- data type dropdown -->
+              <div class="row" *ngIf="addMode">
+                <div class="col col-sm-2"></div>
+                <div class="col col-sm-2">
+                  <label class="mb-2 mr-sm-2"
+                         data-toggle="" title="{{constants.tooltip_datatype}}">Data Type: </label>
+                </div>
+                <div class="col col-sm-4">
+                  <select class="card-sm-body text-center" [(ngModel)]="listItemBB.datatype"
+                          (change)="onSelectedDataType()" name="datatypedropdown">
+                    <option *ngFor="let option of datatypeoptions" [value]="option.value">
+                      {{ option.viewValue }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col col-sm-4"></div>
+              </div>
+              <!-- end data type dropdown -->
+              <div class="mt-1" *ngIf="ffb.showStringFieldForm">
+                <app-string-form
+                  [item]="listItemBB"
+                  [ffb]="ffb"
+                  [addMode]="addMode"
+                  [editMode]="editMode"
+                  [saveButtonEnabled]="saveBtnEnabled"
+                  [saveChangesMsg]="saveChangesMsg"
+                  (cancelAction)="cancelAction()"
+                  (saveAdd)="saveResults($event)"
+                  (saveEdit)="saveResults($event)"
+                  (fixedLength)="useFixedLength($event)"
+                  (madeChange)="changeMade($event)"
+                ></app-string-form>
+              </div>
+              <div class="m-1" *ngIf="ffb.showWholeNumberFieldForm">
+                <app-wholenum-form
+                  [item]="listItemBB"
+                  [ffb]="ffb"
+                  [addMode]="addMode"
+                  [editMode]="editMode"
+                  [saveButtonEnabled]="saveBtnEnabled"
+                  [saveChangesMsg]="saveChangesMsg"
+                  (cancelAction)="cancelAction()"
+                  (saveAdd)="saveResults($event)"
+                  (saveEdit)="saveResults($event)"
+                  (rangedBtnChanged)="useRangedNum($event)"
+                  (makeMinOnlyWhole)="makeMinOnlyWhole($event)"
+                  (makeMaxOnlyWhole)="makeMaxOnlyWhole($event)"
+                  (makeBaseOnlyWhole)="makeBaseOnlyWhole($event)"
+                  (makeIncrOnlyWhole)="makeIncrOnlyWhole($event)"
+                  (madeChange)="changeMade($event)"
+                ></app-wholenum-form>
+              </div>
+              <div class="m-1" *ngIf="ffb.showDecimalNumberFieldForm">
+                <app-decimal-form
+                  [item]="listItemBB"
+                  [ffb]="ffb"
+                  [addMode]="addMode"
+                  [editMode]="editMode"
+                  [saveButtonEnabled]="saveBtnEnabled"
+                  [saveChangesMsg]="saveChangesMsg"
+                  (cancelAction)="cancelAction()"
+                  (saveAdd)="saveResults($event)"
+                  (saveEdit)="saveResults($event)"
+                  (rangedBtnChanged)="useRangedNum($event)"
+                  (makeMinOnlyDecimal)="makeMinOnlyDecimal($event)"
+                  (makeMaxOnlyDecimal)="makeMaxOnlyDecimal($event)"
+                  (makeBaseOnlyDecimal)="makeBaseOnlyDecimal($event)"
+                  (makeIncrOnlyDecimal)="makeIncrOnlyDecimal($event)"
+                  (madeChange)="changeMade($event)"
+                ></app-decimal-form>
+              </div>
+              <div class="m-1" *ngIf="ffb.showDateTimeFieldForm">
+                <app-datetime-form
+                  [item]="listItemBB"
+                  [ffb]="ffb"
+                  [addMode]="addMode"
+                  [editMode]="editMode"
+                  [datetimeoptions]="datetimeoptions"
+                  [saveButtonEnabled]="saveBtnEnabled"
+                  [saveChangesMsg]="saveChangesMsg"
+                  (cancelAction)="cancelAction()"
+                  (saveAdd)="saveResults($event)"
+                  (saveEdit)="saveResults($event)"
+                  (rangedBtnChange)="useRangedNum($event)"
+                  (dateBtnChange)="dateTimeBtnChanged($event)"
+                  (madeChange)="changeMade($event)"
+                ></app-datetime-form>
+              </div>
+              <div class="m-1" *ngIf="ffb.showBooleanFieldForm">
+                <app-boolean-form
+                  [item]="listItemBB"
+                  [ffb]="ffb"
+                  [addMode]="addMode"
+                  [editMode]="editMode"
+                  [saveButtonEnabled]="saveBtnEnabled"
+                  [saveChangesMsg]="saveChangesMsg"
+                  (cancelAction)="cancelAction()"
+                  (saveAdd)="saveResults($event)"
+                  (saveEdit)="saveResults($event)"
+                  (madeChange)="changeMade($event)"
+                ></app-boolean-form>
+              </div>
+              <button *ngIf="addMode && !dataTypeWasSelected" name="outtercancelbtn" (click)="cancelAction()"
+                      class="btn btn-sm btn-block btn-danger text-white mb-3 font-italic">Cancel Add Item</button>
+            </div> <!-- END show form tag -->
+          </div> <!-- END form section-->
+        </div> <!-- END table and form section -->
+    </div> <!-- END middle column -->
+    <div class="col col-sm-3 mh-100 border-info text-dark text-center">
+      <div class="card border-info">
+        <div class="row">
+          <div class="col-sm-12">
+            <p class="font-weight-bold text-center">{{ constants.right_msg1 }}</p>
+            <p>-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</p>
+          </div>
+        </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <p>{{ constants.right_msg2 }}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <!-- Finished button -->
+              <button name="finishedbtn" [disabled]="!finishBtnEnabled" (click)="getData()"
+                      class="btn btn-sm btn-block btn-success text-white mb-3 font-italic">{{this.finishedMessage}}</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <p>-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</p>
+              <p class="mb-2">{{ constants.right_msg3 }}</p>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  $(document).ready(function(){
+    $('[data-toggle="xxx"]').tooltip();
+  });
+</script>

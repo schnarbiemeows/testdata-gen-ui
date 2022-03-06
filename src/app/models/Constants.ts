@@ -1,11 +1,17 @@
 export class Constants {
+
+  // constants
+  minLength:number = 1;
+  maxLength:number = 256;
+  // messages
   left_msg1: string = "Welcome to my Test Data Generator Program!";
   left_msg2: string = "You can have up to ";
   left_msg3: string = " records made in a range of data formats!";
   left_msg3b: string = "It's Easy! Simply ..."
   left_msg4: string = "1.) Select how many records you want made to the right, \n";
   left_msg5: string = "2.) then select the Data Format to the right\n";
-  left_msg6: string = "3.) finally, define each of your data fields\n";
+  left_msg5_2: string = "3.) specify your file name\n";
+  left_msg6: string = "4.) finally, define each of your data fields\n";
   left_msg7: string = "* for help, hover over each field for a better description";
   left_msg8: string = "* the green button can help you fill out each field";
   middle_str_msg1: string = "you can use strings to make all kinds of data using a pattern";

@@ -56,4 +56,58 @@ export class ListItem {
   inc_min_str: number;
   inc_sec_str: number;
 
+  constructor() {
+    this.customerid = 100;
+      this.dataconfigname = "TEST";
+      this.order = 0;
+      this.dependency = -1;
+      this.dataname = '';
+      this.datatype = "";
+      this.canbenull = false;
+      this.canbeblank = false;
+      this.canbeinvalid = false;
+      this.nullpercent = 0;
+      this.blankpercent = 0;
+      this.invalidpercent = 0;
+      this.isfixedlength = false;
+      this.fixedlength = 1;
+      this.minlength = 1;
+      this.maxlength = 256;
+      this.usedistinctvals = false;
+      this.distinctvalues = 1;
+      this.allowuppers = false;
+      this.allowlowers = false;
+      this.allownumbers = false;
+      this.allowspecials = false;
+      this.inclusions = '';
+      this.exclusions = '';
+      this.usepattern = false;
+      this.pattern = '';
+      this.minvaluestr = '';
+      this.maxvaluestr = '';
+      this.minvalwhole = 0;
+      this.maxvalwhole = 0;
+      this.isranged = false;
+      this.basevaluestr = '';
+      this.incrementstr = '';
+      this.basevalue = 0;
+      this.increment = 0;
+      this.minvaldecimal = 0.0;
+      this.maxvaldecimal = 0.0;
+      this.basevaldecimal = 0.0;
+      this.incrementdecimal = 0.0;
+      this.signdigits = 2;
+      this.hasdate = true;
+      this.hastime = false;
+      this.format = '';
+      this.startdatetime = '';
+      this.enddatetime = '';
+      this.basedatetime = '';
+      this.inc_yr_str = 0;
+      this.inc_mth_str = 0;
+      this.inc_day_str = 0;
+      this.inc_hrs_str = 0;
+      this.inc_min_str = 0;
+      this.inc_sec_str = 0;
+  }
 }
